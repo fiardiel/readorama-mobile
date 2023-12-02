@@ -3,6 +3,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:readoramamobile/screens/landinguser/booklist.dart';
+import 'package:readoramamobile/screens/wishlist/wishlist.dart';
 
 class LeftDrawer extends StatelessWidget {
   @override
@@ -27,6 +28,13 @@ class LeftDrawer extends StatelessWidget {
             onTap: () {
               Navigator.pushReplacement(context,
                   MaterialPageRoute(builder: (context) => const BookPage()));
+            },
+          ),
+          ListTile(
+            title: Text('Wishlist'),
+            onTap: () {
+              Navigator.pushReplacement(context,
+                  MaterialPageRoute(builder: (context) => const Wishlist()));
             },
           ),
         ],
