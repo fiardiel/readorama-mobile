@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:provider/provider.dart';
 import 'package:readoramamobile/screens/auth/register.dart';
+import 'package:readoramamobile/screens/landinguser/booklist.dart';
 
 void main() {
   runApp(const LoginApp());
@@ -89,10 +90,10 @@ class _LoginPageState extends State<LoginPage> {
                     if (request.loggedIn) {
                       String message = response['message'];
                       String uname = response['username'];
-                      // Navigator.pushReplacement(
-                      //   context,
-                      //   MaterialPageRoute(builder: (context) => MyHomePage()),
-                      // );
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(builder: (context) => BookPage()),
+                      );
                       ScaffoldMessenger.of(context)
                         ..hideCurrentSnackBar()
                         ..showSnackBar(
