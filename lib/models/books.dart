@@ -39,7 +39,7 @@ class Fields {
     int numReview;
     int price;
     int year;
-    Genre genre;
+    String genre;
 
     Fields({
         required this.name,
@@ -58,7 +58,7 @@ class Fields {
         numReview: json["num_review"],
         price: json["price"],
         year: json["year"],
-        genre: genreValues.map[json["genre"]]!,
+        genre: json["genre"],
     );
 
     Map<String, dynamic> toJson() => {
@@ -68,19 +68,9 @@ class Fields {
         "num_review": numReview,
         "price": price,
         "year": year,
-        "genre": genreValues.reverse[genre],
+        "genre": genre
     };
 }
-
-enum Genre {
-    FICTION,
-    NON_FICTION
-}
-
-final genreValues = EnumValues({
-    "Fiction": Genre.FICTION,
-    "Non Fiction": Genre.NON_FICTION
-});
 
 enum Model {
     MAIN_BOOKS
