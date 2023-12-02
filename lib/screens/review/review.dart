@@ -3,6 +3,8 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:readoramamobile/models/review.dart';
+import 'package:readoramamobile/screens/review/review_detail.dart';
+import 'package:readoramamobile/widgets/leftdrawer.dart';
 
 class Review {
   final String book_title;
@@ -67,7 +69,7 @@ class _ReviewListState extends State<ReviewListPage> {
         backgroundColor: Colors.black,
         foregroundColor: Colors.amber,
       ),
-      //drawer: LeftDrawer(),
+      drawer: LeftDrawer(),
       body: FutureBuilder(
         future: fetchReview(),
         builder: (context, AsyncSnapshot<List<Reviews>> snapshot) {
@@ -98,16 +100,16 @@ class _ReviewListState extends State<ReviewListPage> {
                 mainAxisSpacing: 16.0,
               ),
               itemCount: snapshot.data!.length,
-              itemBuilder: (_, index) => GestureDetector(
-                // onTap: () {
-                //   Navigator.push(
-                //     context,
-                //     MaterialPageRoute(
-                //       builder: (context) =>
-                //           BookDetailPage(book: snapshot.data![index]),
-                //     ),
-                //   );
-                // },
+              itemBuilder: (_, index) => InkWell(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) =>
+                          ReviewDetailPage(review: snapshot.data![index]),
+                    ),
+                  );
+                },
                 child: Card(
                   color: Colors.black87,
                   margin: const EdgeInsets.all(8.0),
