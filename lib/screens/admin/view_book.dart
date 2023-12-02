@@ -3,15 +3,16 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:readoramamobile/models/books.dart';
 import 'package:readoramamobile/screens/admin/book_detail.dart';
+import 'package:readoramamobile/widgets/leftdrawer_admin.dart';
 
-class BookPage extends StatefulWidget {
-  const BookPage({Key? key}) : super(key: key);
+class AdminBookPage extends StatefulWidget {
+  const AdminBookPage({Key? key}) : super(key: key);
 
   @override
-  _BookPageState createState() => _BookPageState();
+  _AdminBookPageState createState() => _AdminBookPageState();
 }
 
-class _BookPageState extends State<BookPage> {
+class _AdminBookPageState extends State<AdminBookPage> {
   Future<List<Books>> fetchProduct() async {
     var url = Uri.parse('http://127.0.0.1:8000/loadbooks/');
     var response = await http.get(
@@ -40,7 +41,7 @@ class _BookPageState extends State<BookPage> {
           backgroundColor: Colors.indigo,
           foregroundColor: Colors.white,
         ),
-        // drawer: const LeftDrawer(),
+        drawer: LeftDrawerAdmin(),
         body: FutureBuilder(
             future: fetchProduct(),
             builder: (context, AsyncSnapshot snapshot) {

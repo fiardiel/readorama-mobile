@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 // import 'package:rafis_inventory_mobile/widgets/left_drawer.dart';
 import 'package:readoramamobile/models/books.dart';
+import 'package:readoramamobile/widgets/leftdrawer_admin.dart';
 
 class BookDetailPage extends StatelessWidget {
   final Books book;
@@ -15,7 +16,7 @@ class BookDetailPage extends StatelessWidget {
         backgroundColor: Colors.indigo,
         foregroundColor: Colors.white,
       ),
-      // drawer: const LeftDrawer(),
+      drawer: LeftDrawerAdmin(),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
