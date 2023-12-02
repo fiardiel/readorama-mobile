@@ -4,6 +4,7 @@
 import 'package:flutter/material.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:provider/provider.dart';
+import 'package:readoramamobile/screens/auth/register.dart';
 
 void main() {
   runApp(const LoginApp());
@@ -15,7 +16,7 @@ class LoginApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Login Adam Inven',
+      title: 'Login ReadORama',
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
@@ -119,10 +120,10 @@ class _LoginPageState extends State<LoginPage> {
                 ),
                 ElevatedButton(
                   onPressed: () {
-                  //   Navigator.push(
-                  //     context,
-                  //     MaterialPageRoute(builder: (context) => RegisterPage()),
-                  //   );
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => RegisterPage()),
+                    );
                   },
                   child: const Text('Register'),
                 ),
