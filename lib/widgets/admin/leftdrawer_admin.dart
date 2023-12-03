@@ -2,7 +2,7 @@
 // ignore_for_file: prefer_const_constructors, use_key_in_widget_constructors
 
 import 'package:flutter/material.dart';
-import 'package:readoramamobile/screens/admin/view_book.dart';
+import 'package:readoramamobile/screens/admin/main_admin.dart';
 import 'package:readoramamobile/screens/landinguser/booklist.dart';
 import 'package:readoramamobile/screens/read_page/read_books.dart';
 import 'package:readoramamobile/screens/review/review.dart';
@@ -17,17 +17,18 @@ class LeftDrawerAdmin extends StatelessWidget {
         children: [
           DrawerHeader(
             decoration: BoxDecoration(
-              color: Colors.black,
+              color: Color.fromARGB(255, 25, 29, 37) ,
             ),
             child: Text(
               'ReadORama',
               style: TextStyle(
-                color: Colors.amber,
+                color: Colors.white,
                 fontSize: 24,
               ),
             ),
           ),
           ListTile(
+            leading: const Icon(Icons.home_outlined),
             title: Text('Home'),
             onTap: () {
               Navigator.pushReplacement(context,
@@ -35,6 +36,7 @@ class LeftDrawerAdmin extends StatelessWidget {
             },
           ),
           ListTile(
+            leading: const Icon(Icons.shopping_basket),
             title: Text('Wishlist'),
             onTap: () {
               Navigator.pushReplacement(context,
@@ -42,13 +44,15 @@ class LeftDrawerAdmin extends StatelessWidget {
             },
           ),
           ListTile(
+            leading : Icon(Icons.book),
             title: Text('Admin Page'),
             onTap: () {
               Navigator.pushReplacement(context,
-                  MaterialPageRoute(builder: (context) => const AdminBookPage()));
+                  MaterialPageRoute(builder: (context) => AdminHomePage()));
             },
           ),
           ListTile(
+            leading: Icon(Icons.rate_review),
             title: Text('Your Review'),
             onTap: () {
               Navigator.pushReplacement(context,
@@ -56,6 +60,7 @@ class LeftDrawerAdmin extends StatelessWidget {
             },
           ),
           ListTile(
+            leading: Icon(Icons.rate_review),
             title: Text('Review Form'),
             onTap: () {
               Navigator.pushReplacement(context,
@@ -63,6 +68,7 @@ class LeftDrawerAdmin extends StatelessWidget {
             },
           ),
           ListTile(
+            leading: Icon(Icons.checklist_rounded),
             title: Text('Read Books'),
             onTap: () {
               Navigator.pushReplacement(context,
