@@ -1,9 +1,9 @@
 // ignore_for_file: use_build_context_synchronously, prefer_const_constructors, library_private_types_in_public_api, use_key_in_widget_constructors
 
-
 import 'package:flutter/material.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:provider/provider.dart';
+import 'package:readoramamobile/screens/admin/main_admin.dart';
 import 'package:readoramamobile/screens/auth/register.dart';
 import 'package:readoramamobile/screens/landinguser/booklist.dart';
 
@@ -90,15 +90,30 @@ class _LoginPageState extends State<LoginPage> {
                     if (request.loggedIn) {
                       String message = response['message'];
                       String uname = response['username'];
-                      Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(builder: (context) => BookPage()),
-                      );
-                      ScaffoldMessenger.of(context)
-                        ..hideCurrentSnackBar()
-                        ..showSnackBar(
-                          SnackBar(content: Text("$message Welcome, $uname.")),
+                      bool isSuperuser = response['is_superuser'];
+                      if (isSuperuser) {
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(builder: (context) => AdminHomePage()),
                         );
+                        ScaffoldMessenger.of(context)
+                          ..hideCurrentSnackBar()
+                          ..showSnackBar(
+                            SnackBar(
+                                content: Text("$message Welcome, $uname.")),
+                          );
+                      } else {
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(builder: (context) => BookPage()),
+                        );
+                        ScaffoldMessenger.of(context)
+                          ..hideCurrentSnackBar()
+                          ..showSnackBar(
+                            SnackBar(
+                                content: Text("$message Welcome, $uname.")),
+                          );
+                      }
                     } else {
                       showDialog(
                         context: context,
