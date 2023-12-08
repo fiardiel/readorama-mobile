@@ -88,8 +88,33 @@ class _ProductPageState extends State<ProductPage> {
                     ),
                     DataCell(
                       ElevatedButton(
-                        onPressed: () {
+                        onPressed: () async {
                           // Implement the 'Delete Book' functionality
+
+                          // Send request to Django and wait for the response
+                          // TODO: Change the URL to your Django app's URL. Don't forget to add the trailing slash (/) if needed.
+                          final response = await http.delete(
+                            Uri.parse(
+                                'http://localhost:8000/read_page/delete-flutter/${product.wishlistId}'),
+                            headers: {"Content-Type": "application/json"},
+                          );
+                          if (response.statusCode == 200) {
+                            ScaffoldMessenger.of(context)
+                                .showSnackBar(const SnackBar(
+                              content: Text("Product deleted successfully!"),
+                            ));
+                            // You may want to refresh the product list after deletion
+                            setState(() {
+                              snapshot.data!.remove(product);
+                            });
+                          } else {
+                            print(
+                                'Failed to delete product. Status code: ${response.statusCode}');
+                            ScaffoldMessenger.of(context)
+                                .showSnackBar(const SnackBar(
+                              content: Text("Failed to delete the product."),
+                            ));
+                          }
                         },
                         style: ElevatedButton.styleFrom(
                           primary: Colors.red, // Set the button color to red
