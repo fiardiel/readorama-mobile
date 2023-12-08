@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:readoramamobile/models/books.dart';
 import 'package:readoramamobile/widgets/admin/leftdrawer_admin.dart';
 
+
 class BookDetailPage extends StatelessWidget {
   final Books book;
 
@@ -50,7 +51,8 @@ class BookDetailPage extends StatelessWidget {
                   const SizedBox(height: 20),
                   ElevatedButton(
                     onPressed: () {
-                      Navigator.pop(context); // Navigate back to the item list page
+                      Navigator.pop(
+                          context); // Navigate back to the item list page
                     },
                     child: const Text('Back to Book List'),
                   ),

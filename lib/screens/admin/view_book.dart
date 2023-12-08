@@ -38,7 +38,7 @@ class _AdminBookPageState extends State<AdminBookPage> {
     return Scaffold(
         appBar: AppBar(
           title: const Text('Books'),
-          backgroundColor: const Color.fromARGB(255, 25, 29, 37) ,
+          backgroundColor: const Color.fromARGB(255, 25, 29, 37),
           foregroundColor: Colors.white,
         ),
         drawer: LeftDrawerAdmin(),
@@ -82,7 +82,7 @@ class _AdminBookPageState extends State<AdminBookPage> {
                             ),
                           );
                         },
-                        child: Container(
+                        child: SizedBox(
                           width: 100, // Adjust the width as needed
                           height: 100, // Adjust the height as needed
                           child: Card(
@@ -102,7 +102,8 @@ class _AdminBookPageState extends State<AdminBookPage> {
                                     ),
                                     textAlign: TextAlign.center,
                                     maxLines: 3, // Limits to 2 lines
-                                    overflow: TextOverflow.ellipsis, // Shows ellipsis when overflow
+                                    overflow: TextOverflow
+                                        .ellipsis, // Shows ellipsis when overflow
                                   ),
                                   const SizedBox(height: 3),
                                   Text(
@@ -112,7 +113,57 @@ class _AdminBookPageState extends State<AdminBookPage> {
                                       fontSize: 10.0,
                                     ),
                                     maxLines: 2, // Limits to 2 lines
-                                    overflow: TextOverflow.ellipsis, // Shows ellipsis when overflow
+                                    overflow: TextOverflow
+                                        .ellipsis, // Shows ellipsis when overflow
+                                  ),
+                                  ElevatedButton(
+                                    onPressed: () async {
+                                      // Implement the 'Delete Book' functionality
+                                      final bookToDeletePK =
+                                          snapshot.data![index].pk;
+                                      // Send request to Django and wait for the response
+                                      final response = await http.delete(
+                                        Uri.parse(
+                                            'http://localhost:8000/landing-admin/delete-book-flutter/$bookToDeletePK'),
+                                        headers: {
+                                          "Content-Type": "application/json"
+                                        },
+                                      );
+                                      if (response.statusCode == 200) {
+                                        ScaffoldMessenger.of(context)
+                                            .showSnackBar(const SnackBar(
+                                          content: Text(
+                                              "Product deleted successfully!"),
+                                        ));
+                                        // You may want to refresh the product list after deletion
+                                        setState(() {
+                                          snapshot.data!.remove((book) =>
+                                              book.pk == bookToDeletePK);
+                                        });
+                                      } else {
+                                        print(
+                                            'Failed to delete product. Status code: ${response.statusCode}');
+                                        ScaffoldMessenger.of(context)
+                                            .showSnackBar(const SnackBar(
+                                          content: Text(
+                                              "Failed to delete the product."),
+                                        ));
+                                      }
+                                    },
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: Colors
+                                          .red, // Set the button color to red
+                                      padding: const EdgeInsets.all(
+                                          12), // Add padding to the button
+                                    ),
+                                    child: const Text(
+                                      'Delete Book',
+                                      style: TextStyle(
+                                        color: Colors
+                                            .white, // Set text color to white
+                                        fontSize: 14,
+                                      ),
+                                    ),
                                   ),
                                   // Add more content or adjust sizing as necessary
                                 ],
