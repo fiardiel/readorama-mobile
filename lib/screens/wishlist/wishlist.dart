@@ -1,3 +1,5 @@
+// ignore_for_file: prefer_const_constructors, avoid_print, use_build_context_synchronously, duplicate_ignore
+
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -28,7 +30,12 @@ class _WishlistState extends State<Wishlist> {
         listProduct.add(WishlistModels.fromJson(d));
       }
     }
-    return listProduct;
+
+    List<WishlistModels> filteredList = listProduct
+        .where((wishlistModel) => wishlistModel.flag == false)
+        .toList();
+
+    return filteredList;
   }
 
   @override
@@ -70,8 +77,8 @@ class _WishlistState extends State<Wishlist> {
                 mainAxisSpacing: 16.0,
               ),
               itemCount: snapshot.data!.length,
-              itemBuilder: (_, index) => GestureDetector(
-                child: Card(
+              itemBuilder: (_, index) {
+                return Card(
                   color: Colors.black87,
                   margin: const EdgeInsets.all(8.0),
                   child: Padding(
@@ -90,11 +97,122 @@ class _WishlistState extends State<Wishlist> {
                           overflow: TextOverflow.ellipsis,
                           maxLines: 2,
                         ),
+                        Text(
+                          snapshot.data![index].flag.toString(),
+                          style: const TextStyle(
+                            fontSize: 18.0,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.amber,
+                          ),
+                          overflow: TextOverflow.ellipsis,
+                          maxLines: 2,
+                        ),
+                        const SizedBox(height: 8),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            GestureDetector(
+                              onTap: () {},
+                              child: Text(
+                                'View Details',
+                                style: TextStyle(color: Colors.blue),
+                              ),
+                            ),
+                            // Delete button
+                            ElevatedButton(
+                              onPressed: () async {
+                                // Implement the 'Delete Book' functionality
+                                final response = await http.delete(
+                                  Uri.parse(
+                                      'http://localhost:8000/read_page/delete-flutter/${snapshot.data![index].wishlistId}'),
+                                  headers: {"Content-Type": "application/json"},
+                                );
+                                if (response.statusCode == 200) {
+                                  // ignore: use_build_context_synchronously
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                      content: Text(
+                                          "Wishlist deleted successfully!"),
+                                    ),
+                                  );
+                                  // You may want to refresh the product list after deletion
+                                  setState(() {
+                                    snapshot.data!.removeAt(index);
+                                  });
+                                } else {
+                                  print(
+                                      'Failed to delete product. Status code: ${response.statusCode}');
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                      content: Text(
+                                          "Failed to delete the wishlist."),
+                                    ),
+                                  );
+                                }
+                              },
+                              style: ElevatedButton.styleFrom(
+                                // ignore: deprecated_member_use
+                                primary:
+                                    Colors.red, // Set the button color to red
+                                padding: EdgeInsets.zero, // Remove padding
+                                textStyle: TextStyle(
+                                    fontSize: 0), // Set text size to zero
+                              ),
+                              child: Icon(
+                                Icons.delete,
+                                color: Colors.white,
+                              ),
+                            ),
+                            ElevatedButton(
+                              onPressed: () async {
+                                // Implement the 'Mark as Read' functionality
+                                final response = await http.post(
+                                  Uri.parse(
+                                      'http://localhost:8000/wishlist/mark-as-read/${snapshot.data![index].wishlistId}/'),
+                                  headers: {"Content-Type": "application/json"},
+                                );
+
+                                if (response.statusCode == 200) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                      content: Text("Book marked as read!"),
+                                    ),
+                                  );
+                                  // You may want to refresh the product list after marking as read
+                                  setState(() {
+                                    snapshot.data![index].flag = true;
+                                  });
+                                } else {
+                                  print(
+                                      'Failed to mark as read. Status code: ${response.statusCode}');
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                      content: Text(
+                                          "Failed to mark the book as read."),
+                                    ),
+                                  );
+                                }
+                              },
+                              style: ElevatedButton.styleFrom(
+                                // ignore: deprecated_member_use
+                                primary:
+                                    Colors.green, // Set the button color to red
+                                padding: EdgeInsets.zero, // Remove padding
+                                textStyle: TextStyle(
+                                    fontSize: 0), // Set text size to zero
+                              ),
+                              child: Icon(
+                                Icons.check,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ],
+                        ),
                       ],
                     ),
                   ),
-                ),
-              ),
+                );
+              },
             );
           }
         },
