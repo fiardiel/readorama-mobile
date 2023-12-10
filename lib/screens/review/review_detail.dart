@@ -1,3 +1,7 @@
+
+
+import 'dart:html';
+
 import 'package:flutter/material.dart';
 // import 'package:rafis_inventory_mobile/widgets/left_drawer.dart';
 import 'package:readoramamobile/models/review.dart';
@@ -12,13 +16,19 @@ class ReviewDetailPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Book Details'),
-        backgroundColor: Colors.indigo,
-        foregroundColor: Colors.white,
+        backgroundColor: Colors.black,
+        foregroundColor: Colors.amber,
       ),
       // drawer: const LeftDrawer(),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: Column(
+        child: Card(
+          color: Colors.black,
+          elevation: 5.0,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
+          child: Padding(
+            padding: const EdgeInsets.all(20.0),
+            child : Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
@@ -26,14 +36,15 @@ class ReviewDetailPage extends StatelessWidget {
               style: const TextStyle(
                 fontSize: 24.0,
                 fontWeight: FontWeight.bold,
+                color: Colors.amber
               ),
             ),
             const SizedBox(height: 10),
-            Text("Book Title: ${review.bookName}"),
+            Text("Book Title: ${review.bookName}", style: TextStyle(color: Colors.amber)),
             const SizedBox(height: 10),
-            Text("Your Rating: ${review.ratingNew}"),
+            Text("Your Rating: ${review.ratingNew}", style: TextStyle(color: Colors.amber)),
             const SizedBox(height: 10),
-            Text("Your Review: ${review.review}"),
+            Text("Your Review: ${review.review}", style: TextStyle(color: Colors.amber)),
             const SizedBox(height: 10),
             ElevatedButton(
               onPressed: () {
@@ -43,6 +54,8 @@ class ReviewDetailPage extends StatelessWidget {
             ),
           ],
         ),
+          ),
+        )
       ),
     );
   }
