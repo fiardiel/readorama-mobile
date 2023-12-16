@@ -50,7 +50,7 @@ class ReviewDetailPage extends StatelessWidget {
               onPressed: () {
                 Navigator.pop(context); // Navigate back to the item list page
               },
-              child: const Text('Back to Book List'),
+              child: const Text('Back to Review List'),
             ),
           ],
         ),
