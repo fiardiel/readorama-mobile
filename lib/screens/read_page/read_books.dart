@@ -23,14 +23,20 @@ class _ProductPageState extends State<ProductPage> {
     // decode the response to JSON
     var data = jsonDecode(utf8.decode(response.bodyBytes));
 
-    // convert the JSON to Product object
+    // convert the JSON to WishlistModels objects
     List<WishlistModels> list_product = [];
     for (var d in data) {
       if (d != null) {
         list_product.add(WishlistModels.fromJson(d));
       }
     }
-    return list_product;
+
+    // Filter the list based on the flag property
+    List<WishlistModels> filteredList = list_product
+        .where((wishlistModel) => wishlistModel.flag == true)
+        .toList();
+
+    return filteredList;
   }
 
   @override
