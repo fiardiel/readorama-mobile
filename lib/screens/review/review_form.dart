@@ -153,7 +153,7 @@ class _ReviewFormPageState extends State<ReviewFormPage> {
                     onPressed: () async {
                     if (_formKey.currentState!.validate()) {
                       // Send request to Django and wait for the response
-                      final response = await request.post(
+                      final response = await request.postJson(
                           "http://127.0.0.1:8000/review/add-review-flutter/",
                           jsonEncode(<String, String>{
                             'reviewTitle': _review_title,
