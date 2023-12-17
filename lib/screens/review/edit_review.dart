@@ -25,7 +25,7 @@ class _EditReviewState extends State<EditReviewPage> {
   }
 
   Future<void> fetchProductDetails() async {
-    final response = await http.post(Uri.parse(
+    final response = await http.put(Uri.parse(
         'http://127.0.0.1:8000/review/load-review-id/${widget.reviewId}'));
 
     if (response.statusCode == 200) {
@@ -34,11 +34,11 @@ class _EditReviewState extends State<EditReviewPage> {
 
       if (reviewData != null) {
         setState(() {
-          _reviewTitleController.text = reviewData['fields']['review_title'];
-          _bookNameController.text = reviewData['fields']['book_name'];
+          _reviewTitleController.text = reviewData['review_title'];
+          _bookNameController.text = reviewData['book_name'];
           _ratingNewController.text =
-              reviewData['fields']['rating_new'].toString();
-          _reviewController.text = reviewData['fields']['review'];
+              reviewData['rating_new'].toString();
+          _reviewController.text = reviewData['review'];
         });
       }
     }
@@ -108,7 +108,7 @@ class _EditReviewState extends State<EditReviewPage> {
                   child: const Text('Save'),
                   onPressed: () async {
                     if (_formKey.currentState!.validate()) {
-                      final response = await http.put(
+                      final response = await http.post(
                         Uri.parse(
                             'http://127.0.0.1:8000/review/edit-review-flutter/${widget.reviewId}'),
                         headers: {
