@@ -1,5 +1,6 @@
 // ignore_for_file: use_build_context_synchronously, prefer_const_constructors, library_private_types_in_public_api, use_key_in_widget_constructors, unused_local_variable
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:provider/provider.dart';
@@ -42,6 +43,7 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     final request = context.watch<CookieRequest>();
     return Scaffold(
+      backgroundColor: Colors.black,
       body: Center(
         child: Card(
           margin: const EdgeInsets.all(16.0),
@@ -49,31 +51,40 @@ class _LoginPageState extends State<LoginPage> {
             borderRadius: BorderRadius.circular(16.0),
           ),
           elevation: 8.0,
+          color: Colors.black,
           child: Padding(
             padding: const EdgeInsets.all(16.0),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                const Text(
-                  'ReadORama',
-                  style: TextStyle(
-                    fontSize: 24.0,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.amber,
-                  ),
+                CachedNetworkImage(
+                  imageUrl: '/assets/readoramalogo.png',
+                  height: 80.0,
+                  width: double.infinity,
+                  fit: BoxFit.cover,
                 ),
                 const SizedBox(height: 24.0),
                 TextField(
                   controller: _usernameController,
-                  decoration: const InputDecoration(
+                  style: TextStyle(color: Colors.amber),
+                  decoration: InputDecoration(
                     labelText: 'Username',
+                    labelStyle: TextStyle(color: Colors.amber),
+                    focusedBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(color: Colors.amber),
+                    ),
                   ),
                 ),
                 const SizedBox(height: 12.0),
                 TextField(
                   controller: _passwordController,
-                  decoration: const InputDecoration(
+                  style: TextStyle(color: Colors.amber),
+                  decoration: InputDecoration(
                     labelText: 'Password',
+                    labelStyle: TextStyle(color: Colors.amber),
+                    focusedBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(color: Colors.amber),
+                    ),
                   ),
                   obscureText: true,
                 ),
@@ -141,7 +152,15 @@ class _LoginPageState extends State<LoginPage> {
                       );
                     }
                   },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.amber,
+                  ),
                   child: const Text('Login'),
+                ),
+                const SizedBox(height: 12.0),
+                Text(
+                  "Don't have an account? Signup here",
+                  style: TextStyle(color: Colors.amber),
                 ),
                 ElevatedButton(
                   onPressed: () {
@@ -150,6 +169,9 @@ class _LoginPageState extends State<LoginPage> {
                       MaterialPageRoute(builder: (context) => RegisterPage()),
                     );
                   },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.amber,
+                  ),
                   child: const Text('Register'),
                 ),
               ],
