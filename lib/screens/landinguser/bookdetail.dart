@@ -1,4 +1,4 @@
-// ignore_for_file: avoid_print, prefer_const_constructors, must_be_immutable, override_on_non_overriding_member, library_private_types_in_public_api, prefer_const_declarations, unused_local_variable
+// ignore_for_file: avoid_print, prefer_const_constructors, must_be_immutable, override_on_non_overriding_member, library_private_types_in_public_api, prefer_const_declarations, unused_local_variable, use_build_context_synchronously
 
 import 'dart:convert';
 
@@ -21,7 +21,6 @@ class _BookDetailPageState extends State<BookDetailPage> {
   late String userId = '';
   late String usernameloggedin = '';
 
-
   @override
   void initState() {
     super.initState();
@@ -41,11 +40,11 @@ class _BookDetailPageState extends State<BookDetailPage> {
     });
   }
 
-
   Future<void> navigateToLoginPage() async {
     Navigator.push(
         context, MaterialPageRoute(builder: (context) => LoginPage()));
   }
+
   Future<String> getUserId() async {
     SharedPreferences pref = await SharedPreferences.getInstance();
     String userId = pref.getString("userid") ?? "";
@@ -53,7 +52,6 @@ class _BookDetailPageState extends State<BookDetailPage> {
   }
 
   Future<void> addToWishlist() async {
-
     if (usernameloggedin.isEmpty) {
       navigateToLoginPage();
       return;
@@ -73,9 +71,17 @@ class _BookDetailPageState extends State<BookDetailPage> {
 
       if (response.statusCode == 200 &&
           responseData['message'] == 'Book added to wishlist successfully') {
-        print('Book added to Wishlist! $userId');
+        ScaffoldMessenger.of(context)
+          ..hideCurrentSnackBar()
+          ..showSnackBar(
+            SnackBar(content: Text("Book added to Wishlist!")),
+          );
       } else {
-        print('${responseData['message']}');
+        ScaffoldMessenger.of(context)
+          ..hideCurrentSnackBar()
+          ..showSnackBar(
+            SnackBar(content: Text(responseData['message'])),
+          );
       }
     } catch (error) {
       print('Error adding to Wishlist: $error');
@@ -102,9 +108,17 @@ class _BookDetailPageState extends State<BookDetailPage> {
 
       if (response.statusCode == 200 &&
           responseData['message'] == 'Book marked as read successfully') {
-        print('Marked As Read! $userId');
+        ScaffoldMessenger.of(context)
+          ..hideCurrentSnackBar()
+          ..showSnackBar(
+            SnackBar(content: Text("Book Marked As Read!")),
+          );
       } else {
-        print('${responseData['message']}');
+        ScaffoldMessenger.of(context)
+          ..hideCurrentSnackBar()
+          ..showSnackBar(
+            SnackBar(content: Text(responseData['message'])),
+          );
       }
     } catch (error) {
       print('Error adding to Wishlist: $error');
