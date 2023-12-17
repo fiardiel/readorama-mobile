@@ -4,6 +4,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:readoramamobile/models/books.dart';
+import 'package:readoramamobile/screens/auth/login.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 
@@ -17,8 +18,9 @@ class BookDetailPage extends StatefulWidget {
 }
 
 class _BookDetailPageState extends State<BookDetailPage> {
-  late String userId;
-  late String usernameloggedin;
+  late String userId = '';
+  late String usernameloggedin = '';
+
 
   @override
   void initState() {
@@ -39,6 +41,11 @@ class _BookDetailPageState extends State<BookDetailPage> {
     });
   }
 
+
+  Future<void> navigateToLoginPage() async {
+    Navigator.push(
+        context, MaterialPageRoute(builder: (context) => LoginPage()));
+  }
   Future<String> getUserId() async {
     SharedPreferences pref = await SharedPreferences.getInstance();
     String userId = pref.getString("userid") ?? "";
@@ -46,6 +53,12 @@ class _BookDetailPageState extends State<BookDetailPage> {
   }
 
   Future<void> addToWishlist() async {
+
+    if (usernameloggedin.isEmpty) {
+      navigateToLoginPage();
+      return;
+    }
+
     final String endpoint = 'http://localhost:8000/flutter/add-to-wishlist/';
 
     try {
@@ -70,6 +83,11 @@ class _BookDetailPageState extends State<BookDetailPage> {
   }
 
   Future<void> markAsRead() async {
+    if (usernameloggedin.isEmpty) {
+      navigateToLoginPage();
+      return;
+    }
+
     final String endpoint = 'http://localhost:8000/flutter/add-to-read/';
 
     try {
