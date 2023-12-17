@@ -1,3 +1,5 @@
+
+
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
@@ -171,6 +173,47 @@ class _ReviewListState extends State<ReviewListPage> {
                           ),
                           overflow: TextOverflow.ellipsis,
                           // maxLines: 2,
+                        ),
+                        ElevatedButton(
+                          onPressed: () async {
+                            final reviewDeletedpk = snapshot.data![index]
+                                .reviewPk; // implement the 'delete review' functionality in flutter
+                            final response = await http.delete(
+                              Uri.parse(
+                                  'http://127.0.0.1:8000/review/delete-review-flutter/$reviewDeletedpk'),
+                              headers: {"Content-Type": "application/json"},
+                            );
+
+                            if (response.statusCode == 200) {
+                              ScaffoldMessenger.of(context)
+                                  .showSnackBar(const SnackBar(
+                                content: Text("Review deleted successfully!"),
+                              ));
+                              // You may want to refresh the product list after deletion
+                              setState(() {
+                                snapshot.data!.remove(
+                                    (review) => review.pk == reviewDeletedpk);
+                              });
+                            } else {
+                              print(
+                                  'Failed to delete review. Status code: ${response.statusCode}');
+                              ScaffoldMessenger.of(context)
+                                  .showSnackBar(const SnackBar(
+                                content: Text("Failed to delete the review."),
+                              ));
+                            }
+                          },
+                          style : ElevatedButton.styleFrom(
+                            backgroundColor: Colors.red,
+                            padding: const EdgeInsets.all(
+                                          12),
+                          ),
+                          child : const Text(
+                            'Delete Review',
+                            style: TextStyle(
+                            color: Colors.white, // Set text color to white
+                            fontSize: 14,)
+                          )
                         )
                       ],
                     ),
