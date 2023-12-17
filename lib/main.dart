@@ -18,6 +18,7 @@ class MyApp extends StatelessWidget {
     return Provider(
       create: (_) => CookieRequest(),
       child: MaterialApp(
+        debugShowCheckedModeBanner: false,
         title: 'ReadORama',
         theme: ThemeData(
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.indigo),
