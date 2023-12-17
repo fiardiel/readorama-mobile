@@ -113,10 +113,21 @@ class _BookPageState extends State<BookPage> {
         backgroundColor: Colors.black,
         foregroundColor: Colors.amber,
         actions: [
-          if (usernameloggedin
-              .isNotEmpty) // Menampilkan icon user jika usernameloggedin tidak kosong
+          if (usernameloggedin.isNotEmpty)
             PopupMenuButton(
-              icon: Icon(Icons.account_circle),
+              icon: Row(
+                children: [
+                  Icon(Icons.account_circle),
+                  SizedBox(width: 4), // Spacer
+                  Text(
+                    usernameloggedin,
+                    style: TextStyle(
+                      color: Colors.amber, // Warna amber untuk nama pengguna
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
+              ),
               onSelected: (value) async {
                 if (value == 'logout') {
                   await performLogout(context);
@@ -143,8 +154,7 @@ class _BookPageState extends State<BookPage> {
                 ];
               },
             ),
-          if (usernameloggedin
-              .isEmpty) // Menampilkan teks "Guest" jika usernameloggedin kosong
+          if (usernameloggedin.isEmpty)
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: Text(
