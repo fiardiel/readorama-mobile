@@ -5,6 +5,7 @@ import 'package:http/http.dart' as http;
 import 'package:readoramamobile/models/review.dart';
 import 'package:readoramamobile/screens/review/review_detail.dart';
 import 'package:readoramamobile/widgets/leftdrawer.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Review {
   final String book_title;
@@ -40,6 +41,28 @@ class ReviewListPage extends StatefulWidget {
 }
 
 class _ReviewListState extends State<ReviewListPage> {
+  late String userid = '';
+  late String usernameloggedin = '';
+
+  @override
+  void initState() {
+    super.initState();
+    getSession();
+  }
+
+  @override
+  dispose() {
+    super.dispose();
+  }
+
+  getSession() async {
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    setState(() {
+      userid = pref.getString("userid")!;
+      usernameloggedin = pref.getString("username")!;
+    });
+  }
+
   Future<List<Reviews>> fetchReview() async {
     var url = Uri.parse('http://127.0.0.1:8000/review/get-review-flutter/');
 
@@ -69,7 +92,9 @@ class _ReviewListState extends State<ReviewListPage> {
         backgroundColor: Colors.black,
         foregroundColor: Colors.amber,
       ),
-      drawer: LeftDrawer(),
+      drawer: LeftDrawer(
+        isLoggedIn: usernameloggedin,
+      ),
       body: FutureBuilder(
         future: fetchReview(),
         builder: (context, AsyncSnapshot<List<Reviews>> snapshot) {

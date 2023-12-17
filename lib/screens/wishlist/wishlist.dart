@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:readoramamobile/models/wishlist.dart';
 import 'package:readoramamobile/widgets/leftdrawer.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Wishlist extends StatefulWidget {
   const Wishlist({Key? key}) : super(key: key);
@@ -13,6 +14,28 @@ class Wishlist extends StatefulWidget {
 }
 
 class _WishlistState extends State<Wishlist> {
+  late String userid = '';
+  late String usernameloggedin = '';
+
+  @override
+  void initState() {
+    super.initState();
+    getSession();
+  }
+
+  @override
+  dispose() {
+    super.dispose();
+  }
+
+  getSession() async {
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    setState(() {
+      userid = pref.getString("userid")!;
+      usernameloggedin = pref.getString("username")!;
+    });
+  }
+
   Future<List<WishlistModels>> fetchProduct() async {
     var url = Uri.parse('http://127.0.0.1:8000/wishlist/wishlistmodels/');
     var response = await http.get(
@@ -39,7 +62,9 @@ class _WishlistState extends State<Wishlist> {
         backgroundColor: Colors.black,
         foregroundColor: Colors.amber,
       ),
-      drawer: LeftDrawer(),
+      drawer: LeftDrawer(
+        isLoggedIn: usernameloggedin,
+      ),
       body: FutureBuilder(
         future: fetchProduct(),
         builder: (context, AsyncSnapshot<List<WishlistModels>> snapshot) {
