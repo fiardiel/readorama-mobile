@@ -4,6 +4,7 @@ import 'package:http/http.dart' as http;
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:provider/provider.dart';
 import 'package:readoramamobile/models/books.dart';
+import 'package:readoramamobile/screens/auth/login.dart';
 import 'package:readoramamobile/screens/landinguser/bookdetail.dart';
 import 'dart:convert';
 
@@ -96,6 +97,12 @@ class _BookPageState extends State<BookPage> {
       if (response['status']) {
         print('Logout successful');
         // Lakukan update state atau clear data sesuai kebutuhan
+        ScaffoldMessenger.of(context)
+          ..hideCurrentSnackBar()
+          ..showSnackBar(
+            SnackBar(
+                content: Text("Successfully Logout! Bye, $usernameloggedin")),
+          );
         await clearSharedPreferences();
       } else {
         print('Failed to logout. Status code: ${response['message']}');
@@ -140,14 +147,6 @@ class _BookPageState extends State<BookPage> {
               itemBuilder: (BuildContext context) {
                 return [
                   PopupMenuItem(
-                    value: 'profile',
-                    child: Text('Profile'),
-                  ),
-                  PopupMenuItem(
-                    value: 'settings',
-                    child: Text('Settings'),
-                  ),
-                  PopupMenuItem(
                     value: 'logout',
                     child: Text('Logout'),
                   ),
@@ -155,15 +154,17 @@ class _BookPageState extends State<BookPage> {
               },
             ),
           if (usernameloggedin.isEmpty)
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Text(
-                'Guest',
-                style: TextStyle(
-                  color: Colors.amber,
-                  fontWeight: FontWeight.bold,
-                ),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => LoginPage()),
+                );
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.amber,
               ),
+              child: Text('Login'),
             ),
         ],
       ),
