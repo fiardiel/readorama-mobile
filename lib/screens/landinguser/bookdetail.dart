@@ -21,6 +21,7 @@ class _BookDetailPageState extends State<BookDetailPage> {
   late String userId = '';
   late String usernameloggedin = '';
 
+
   @override
   void initState() {
     super.initState();
@@ -40,11 +41,11 @@ class _BookDetailPageState extends State<BookDetailPage> {
     });
   }
 
+
   Future<void> navigateToLoginPage() async {
     Navigator.push(
         context, MaterialPageRoute(builder: (context) => LoginPage()));
   }
-
   Future<String> getUserId() async {
     SharedPreferences pref = await SharedPreferences.getInstance();
     String userId = pref.getString("userid") ?? "";
@@ -52,10 +53,12 @@ class _BookDetailPageState extends State<BookDetailPage> {
   }
 
   Future<void> addToWishlist() async {
+
     if (usernameloggedin.isEmpty) {
       navigateToLoginPage();
       return;
     }
+
     final String endpoint = 'http://localhost:8000/flutter/add-to-wishlist/';
 
     try {
@@ -84,6 +87,7 @@ class _BookDetailPageState extends State<BookDetailPage> {
       navigateToLoginPage();
       return;
     }
+
     final String endpoint = 'http://localhost:8000/flutter/add-to-read/';
 
     try {
