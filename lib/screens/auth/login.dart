@@ -1,4 +1,4 @@
-// ignore_for_file: use_build_context_synchronously, prefer_const_constructors, library_private_types_in_public_api, use_key_in_widget_constructors
+// ignore_for_file: use_build_context_synchronously, prefer_const_constructors, library_private_types_in_public_api, use_key_in_widget_constructors, unused_local_variable
 
 import 'package:flutter/material.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import 'package:readoramamobile/screens/admin/main_admin.dart';
 import 'package:readoramamobile/screens/auth/register.dart';
 import 'package:readoramamobile/screens/landinguser/booklist.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
   runApp(const LoginApp());
@@ -90,11 +91,19 @@ class _LoginPageState extends State<LoginPage> {
                     if (request.loggedIn) {
                       String message = response['message'];
                       String uname = response['username'];
+                      int uid = response['user_id'];
                       bool isSuperuser = response['is_superuser'];
+                      SharedPreferences pref =
+                          await SharedPreferences.getInstance();
+                      await pref.setString("username", uname);
+                      await pref.setString("userid", uid.toString());
+                      await pref.setBool("is_superuser", isSuperuser);
+                      await pref.setBool("is_login", true);
                       if (isSuperuser) {
                         Navigator.pushReplacement(
                           context,
-                          MaterialPageRoute(builder: (context) => AdminHomePage()),
+                          MaterialPageRoute(
+                              builder: (context) => AdminHomePage()),
                         );
                         ScaffoldMessenger.of(context)
                           ..hideCurrentSnackBar()
