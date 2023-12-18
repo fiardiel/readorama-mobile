@@ -5,6 +5,8 @@ import 'package:readoramamobile/models/books.dart';
 import 'package:readoramamobile/screens/admin/book_detail.dart';
 import 'package:readoramamobile/screens/admin/edit_book.dart';
 import 'package:readoramamobile/widgets/admin/leftdrawer_admin.dart';
+import 'package:readoramamobile/widgets/leftdrawer.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class AdminBookPage extends StatefulWidget {
   const AdminBookPage({Key? key}) : super(key: key);
@@ -14,8 +16,32 @@ class AdminBookPage extends StatefulWidget {
 }
 
 class _AdminBookPageState extends State<AdminBookPage> {
+  late String userid = '';
+  late String usernameloggedin = '';
+  late bool isSuperuser = false;
+
+  @override
+  void initState() {
+    super.initState();
+    getSession();
+  }
+
+  @override
+  dispose() {
+    super.dispose();
+  }
+
+  getSession() async {
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    setState(() {
+      userid = pref.getString("userid")!;
+      usernameloggedin = pref.getString("username")!;
+      isSuperuser = pref.getBool("is_superuser")!;
+    });
+  }
+
   Future<List<Books>> fetchProduct() async {
-    var url = Uri.parse('http://127.0.0.1:8000/loadbooks/');
+    var url = Uri.parse('http://localhost:8000/loadbooks/');
     var response = await http.get(
       url,
       headers: {"Content-Type": "application/json"},
@@ -53,11 +79,11 @@ class _AdminBookPageState extends State<AdminBookPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: const Text('Books'),
+          title: Text('Books'),
           backgroundColor: const Color.fromARGB(255, 25, 29, 37),
           foregroundColor: Colors.white,
         ),
-        drawer: LeftDrawerAdmin(),
+        drawer: isSuperuser ? LeftDrawerAdmin(isLoggedIn: usernameloggedin) : LeftDrawer(isLoggedIn: usernameloggedin),
         body: FutureBuilder(
             future: fetchProduct(),
             builder: (context, AsyncSnapshot snapshot) {
