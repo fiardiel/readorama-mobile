@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:readoramamobile/widgets/admin/leftdrawer_admin.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class EditProductPage extends StatefulWidget {
   final int productId; // Assuming this is the unique ID for the product to edit
@@ -21,16 +23,34 @@ class _EditProductPageState extends State<EditProductPage> {
   TextEditingController _yearController = TextEditingController();
   TextEditingController _genreController = TextEditingController();
 
+  late String userid = '';
+  late String usernameloggedin = '';
+  late bool isSuperuser = false;
+
   @override
   void initState() {
     super.initState();
-    // Fetch product details using widget.productId and set the TextEditingController values
+    getSession();
     fetchProductDetails();
+  }
+
+  @override
+  dispose() {
+    super.dispose();
+  }
+
+  getSession() async {
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    setState(() {
+      userid = pref.getString("userid")!;
+      usernameloggedin = pref.getString("username")!;
+      isSuperuser = pref.getBool("is_superuser")!;
+    });
   }
 
   Future<void> fetchProductDetails() async {
     final response = await http.get(Uri.parse(
-        'http://127.0.0.1:8000/landing-admin/loadbooks-by-id/${widget.productId}'));
+        'http://localhost:8000/landing-admin/loadbooks-by-id/${widget.productId}'));
 
     if (response.statusCode == 200) {
       final productList = jsonDecode(response.body) as List; // Parse as a List
@@ -61,7 +81,12 @@ class _EditProductPageState extends State<EditProductPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Edit Product'),
+        title: Text('Edit Book'),
+        backgroundColor: const Color.fromARGB(255, 25, 29, 37),
+        foregroundColor: Colors.white,
+      ),
+      drawer: LeftDrawerAdmin(
+        isLoggedIn: usernameloggedin,
       ),
       body: Form(
         key: _formKey,
@@ -165,7 +190,7 @@ class _EditProductPageState extends State<EditProductPage> {
                   if (_formKey.currentState!.validate()) {
                     final response = await http.put(
                       Uri.parse(
-                          'http://127.0.0.1:8000/landing-admin/edit-product-flutter/${widget.productId}'),
+                          'http://localhost:8000/landing-admin/edit-product-flutter/${widget.productId}'),
                       headers: {
                         'Content-Type': 'application/json',
                       },
@@ -181,13 +206,18 @@ class _EditProductPageState extends State<EditProductPage> {
                     );
 
                     if (response.statusCode == 200) {
+                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                        content: Text("Book edited successfully!"),
+                      ));
                       // Product updated successfully
-                      Navigator.pop(context, true); // Passing 'true' to indicate success
+                      Navigator.pop(
+                          context, true); // Passing 'true' to indicate success
                     } else {
                       // Handle error
                     }
                   }
-                ;},
+                  ;
+                },
               ),
             ],
           ),

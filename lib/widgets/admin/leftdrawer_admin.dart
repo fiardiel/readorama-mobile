@@ -3,13 +3,48 @@
 
 import 'package:flutter/material.dart';
 import 'package:readoramamobile/screens/admin/main_admin.dart';
+import 'package:readoramamobile/screens/auth/login.dart';
 import 'package:readoramamobile/screens/landinguser/booklist.dart';
 import 'package:readoramamobile/screens/read_page/read_books.dart';
 import 'package:readoramamobile/screens/review/review.dart';
 import 'package:readoramamobile/screens/review/review_form.dart';
 import 'package:readoramamobile/screens/wishlist/wishlist.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-class LeftDrawerAdmin extends StatelessWidget {
+class LeftDrawerAdmin extends StatefulWidget {
+  final String isLoggedIn;
+
+  const LeftDrawerAdmin({Key? key, required this.isLoggedIn}) : super(key: key);
+
+  @override
+  _LeftDrawerAdminState createState() => _LeftDrawerAdminState();
+}
+
+class _LeftDrawerAdminState extends State<LeftDrawerAdmin> {
+  late String userid = '';
+  late String usernameloggedin = '';
+  late bool isSuperuser = false;
+
+  @override
+  void initState() {
+    super.initState();
+    getSession();
+  }
+
+  @override
+  dispose() {
+    super.dispose();
+  }
+
+  getSession() async {
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    setState(() {
+      userid = pref.getString("userid")!;
+      usernameloggedin = pref.getString("username")!;
+      isSuperuser = pref.getBool("is_superuser")!;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Drawer(
@@ -20,7 +55,7 @@ class LeftDrawerAdmin extends StatelessWidget {
               color: Color.fromARGB(255, 25, 29, 37) ,
             ),
             child: Text(
-              'ReadORama',
+              'ReadORama \nfor $usernameloggedin',
               style: TextStyle(
                 color: Colors.white,
                 fontSize: 24,
@@ -78,5 +113,16 @@ class LeftDrawerAdmin extends StatelessWidget {
         ],
       ),
     );
+  }
+
+
+  void _navigateToPage(BuildContext context, Widget page) {
+    if (widget.isLoggedIn.isNotEmpty) {
+      print(widget.isLoggedIn);
+      Navigator.push(context, MaterialPageRoute(builder: (context) => page));
+    } else {
+      Navigator.push(
+          context, MaterialPageRoute(builder: (context) => LoginPage()));
+    }
   }
 }
