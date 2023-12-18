@@ -47,7 +47,7 @@ class _BookPageState extends State<BookPage> {
   }
 
   Future<List<Books>> searchBooks(String query) async {
-    var url = Uri.parse('http://localhost:8000/flutter/searchbooks/');
+    var url = Uri.parse('http://35.226.89.131/flutter/searchbooks/');
     var uri = Uri.http(url.authority, url.path, {"search_term": query});
 
     var response = await http.get(
@@ -68,7 +68,7 @@ class _BookPageState extends State<BookPage> {
   }
 
   Future<List<Books>> fetchBooks() async {
-    var url = Uri.parse('http://localhost:8000/loadbooks/');
+    var url = Uri.parse('http://35.226.89.131/loadbooks/');
     var response = await http.get(
       url,
       headers: {"Content-Type": "application/json"},
@@ -95,7 +95,7 @@ class _BookPageState extends State<BookPage> {
     final request = context.read<CookieRequest>();
     try {
       final response =
-          await request.logout("http://localhost:8000/auth/logout/");
+          await request.logout("http://35.226.89.131/auth/logout/");
 
       if (response['status']) {
         print('Logout successful');

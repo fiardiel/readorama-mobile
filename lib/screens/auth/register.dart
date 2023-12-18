@@ -135,7 +135,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     }
 
                     final response = await postJson(
-                      "http://localhost:8000/auth/register/",
+                      "http://35.226.89.131/auth/register/",
                       {
                         "Content-Type": "application/json",
                       },
