@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import 'package:readoramamobile/models/books.dart';
 import 'package:readoramamobile/screens/auth/login.dart';
 import 'package:readoramamobile/screens/landinguser/bookdetail.dart';
+import 'package:readoramamobile/widgets/admin/leftdrawer_admin.dart';
 import 'dart:convert';
 
 import 'package:readoramamobile/widgets/leftdrawer.dart';
@@ -23,6 +24,7 @@ class _BookPageState extends State<BookPage> {
   TextEditingController searchController = TextEditingController();
   late String userid = '';
   late String usernameloggedin = '';
+  late bool isSuperuser = false;
 
   @override
   void initState() {
@@ -40,6 +42,7 @@ class _BookPageState extends State<BookPage> {
     setState(() {
       userid = pref.getString("userid")!;
       usernameloggedin = pref.getString("username")!;
+      isSuperuser = pref.getBool('is_superuser')!;
     });
   }
 
@@ -114,6 +117,15 @@ class _BookPageState extends State<BookPage> {
 
   @override
   Widget build(BuildContext context) {
+
+    Widget drawerWidget;
+
+    if (isSuperuser) {
+      drawerWidget = LeftDrawerAdmin(isLoggedIn: usernameloggedin);
+    } else {
+      drawerWidget = LeftDrawer(isLoggedIn: usernameloggedin);
+    }
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Book List'),
@@ -168,9 +180,7 @@ class _BookPageState extends State<BookPage> {
             ),
         ],
       ),
-      drawer: LeftDrawer(
-        isLoggedIn: usernameloggedin,
-      ),
+      drawer: drawerWidget,
       body: Column(
         children: [
           Padding(
