@@ -38,6 +38,8 @@ class _RegisterPageState extends State<RegisterPage> {
   Widget build(BuildContext context) {
     final request = context.watch<CookieRequest>();
     return Scaffold(
+      backgroundColor:
+          Colors.black, // Sesuaikan dengan warna background LoginPage
       appBar: AppBar(
         title: const Text('Register'),
       ),
@@ -48,6 +50,8 @@ class _RegisterPageState extends State<RegisterPage> {
             borderRadius: BorderRadius.circular(16.0),
           ),
           elevation: 8.0,
+          color:
+              Colors.black, // Sesuaikan dengan warna background Card LoginPage
           child: Padding(
             padding: const EdgeInsets.all(16.0),
             child: Column(
@@ -59,28 +63,48 @@ class _RegisterPageState extends State<RegisterPage> {
                   style: TextStyle(
                     fontSize: 20.0,
                     fontWeight: FontWeight.bold,
+                    color:
+                        Colors.amber, // Sesuaikan dengan warna teks LoginPage
                   ),
                 ),
                 const SizedBox(height: 16.0),
                 TextField(
                   controller: _usernameController,
+                  style: TextStyle(
+                      color: Colors
+                          .amber), // Sesuaikan dengan warna teks LoginPage
                   decoration: const InputDecoration(
                     labelText: 'Username',
+                    labelStyle: TextStyle(
+                        color: Colors
+                            .amber), // Sesuaikan dengan warna teks LoginPage
                   ),
                 ),
                 const SizedBox(height: 12.0),
                 TextField(
                   controller: _password1Controller,
+                  style: TextStyle(
+                      color: Colors
+                          .amber), // Sesuaikan dengan warna teks LoginPage
                   decoration: const InputDecoration(
                     labelText: 'Password',
+                    labelStyle: TextStyle(
+                        color: Colors
+                            .amber), // Sesuaikan dengan warna teks LoginPage
                   ),
                   obscureText: true,
                 ),
                 const SizedBox(height: 12.0),
                 TextField(
                   controller: _password2Controller,
+                  style: TextStyle(
+                      color: Colors
+                          .amber), // Sesuaikan dengan warna teks LoginPage
                   decoration: const InputDecoration(
                     labelText: 'Confirm Password',
+                    labelStyle: TextStyle(
+                        color: Colors
+                            .amber), // Sesuaikan dengan warna teks LoginPage
                   ),
                   obscureText: true,
                 ),
@@ -154,6 +178,10 @@ class _RegisterPageState extends State<RegisterPage> {
                       );
                     }
                   },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor:
+                        Colors.amber, // Sesuaikan dengan warna tombol LoginPage
+                  ),
                   child: const Text('Register'),
                 ),
               ],

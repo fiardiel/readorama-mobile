@@ -1,4 +1,3 @@
-
 // ignore_for_file: use_build_context_synchronously, prefer_const_constructors, unused_import
 
 import 'dart:convert';
@@ -10,6 +9,7 @@ import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:provider/provider.dart';
 import 'package:readoramamobile/screens/review/review.dart';
 import 'package:readoramamobile/widgets/leftdrawer.dart'; // Import your LeftDrawer widget here
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ReviewFormPage extends StatefulWidget {
   const ReviewFormPage({Key? key}) : super(key: key);
@@ -24,6 +24,27 @@ class _ReviewFormPageState extends State<ReviewFormPage> {
   String _book_title = "";
   int _rating = 0;
   String _review = "";
+  late String userid = '';
+  late String usernameloggedin = '';
+
+  @override
+  void initState() {
+    super.initState();
+    getSession();
+  }
+
+  @override
+  dispose() {
+    super.dispose();
+  }
+
+  getSession() async {
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    setState(() {
+      userid = pref.getString("userid")!;
+      usernameloggedin = pref.getString("username")!;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -38,7 +59,9 @@ class _ReviewFormPageState extends State<ReviewFormPage> {
         foregroundColor: Colors.amber,
       ),
       // Add the previously created drawer here
-      drawer: LeftDrawer(),
+      drawer: LeftDrawer(
+        isLoggedIn: usernameloggedin,
+      ),
       body: Form(
         key: _formKey,
         child: SingleChildScrollView(
@@ -68,7 +91,7 @@ class _ReviewFormPageState extends State<ReviewFormPage> {
                   },
                 ),
               ),
-                          Padding(
+              Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: TextFormField(
                   decoration: InputDecoration(
@@ -91,7 +114,6 @@ class _ReviewFormPageState extends State<ReviewFormPage> {
                   },
                 ),
               ),
-
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: TextFormField(
@@ -141,7 +163,6 @@ class _ReviewFormPageState extends State<ReviewFormPage> {
                   },
                 ),
               ),
-
               Align(
                 alignment: Alignment.bottomCenter,
                 child: Padding(
@@ -151,22 +172,21 @@ class _ReviewFormPageState extends State<ReviewFormPage> {
                       backgroundColor: MaterialStateProperty.all(Colors.black),
                     ),
                     onPressed: () async {
-                    if (_formKey.currentState!.validate()) {
-                      // Send request to Django and wait for the response
-                      final response = await request.postJson(
-                          "http://127.0.0.1:8000/review/add-review-flutter/",
-                          jsonEncode(<String, String>{
-                            'reviewTitle': _review_title,
-                            'review': _review,
-                            'ratingNew': _rating.toString(),
-                            'bookName': _book_title,
-                          }));
+                      if (_formKey.currentState!.validate()) {
+                        // Send request to Django and wait for the response
+                        final response = await request.postJson(
+                            "http://127.0.0.1:8000/review/add-review-flutter/",
+                            jsonEncode(<String, String>{
+                              'reviewTitle': _review_title,
+                              'review': _review,
+                              'ratingNew': _rating.toString(),
+                              'bookName': _book_title,
+                            }));
 
                         if (response['status'] == 'success') {
                           ScaffoldMessenger.of(context)
                               .showSnackBar(const SnackBar(
-                            content:
-                                Text("New Review has saved successfully!"),
+                            content: Text("New Review has saved successfully!"),
                           ));
                           Navigator.pushReplacement(
                             context,

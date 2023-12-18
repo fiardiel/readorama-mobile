@@ -1,10 +1,10 @@
 // ignore_for_file: unused_import
 
-
 import 'package:flutter/material.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:provider/provider.dart';
 import 'package:readoramamobile/screens/auth/login.dart';
+import 'package:readoramamobile/screens/landinguser/booklist.dart';
 
 void main() {
   runApp(const MyApp());
@@ -16,17 +16,16 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Provider(
-      create: (_) {
-        CookieRequest request = CookieRequest();
-        return request;
-      },
+      create: (_) => CookieRequest(),
       child: MaterialApp(
-          title: 'ReadORama',
-          theme: ThemeData(
-            colorScheme: ColorScheme.fromSeed(seedColor: Colors.indigo),
-            useMaterial3: true,
-          ),
-          home: const LoginPage()),
+        debugShowCheckedModeBanner: false,
+        title: 'ReadORama',
+        theme: ThemeData(
+          colorScheme: ColorScheme.fromSeed(seedColor: Colors.indigo),
+          useMaterial3: true,
+        ),
+        home: const BookPage(),
+      ),
     );
   }
 }

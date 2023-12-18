@@ -1,7 +1,7 @@
-// drawer_widget.dart
 // ignore_for_file: prefer_const_constructors, use_key_in_widget_constructors
 
 import 'package:flutter/material.dart';
+import 'package:readoramamobile/screens/auth/login.dart';
 import 'package:readoramamobile/screens/landinguser/booklist.dart';
 import 'package:readoramamobile/screens/review/review.dart';
 import 'package:readoramamobile/screens/wishlist/wishlist.dart';
@@ -9,6 +9,10 @@ import 'package:readoramamobile/screens/review/review_form.dart';
 import 'package:readoramamobile/screens/read_page/read_books.dart';
 
 class LeftDrawer extends StatelessWidget {
+  final String isLoggedIn;
+
+  const LeftDrawer({Key? key, required this.isLoggedIn}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return Drawer(
@@ -36,37 +40,39 @@ class LeftDrawer extends StatelessWidget {
           ListTile(
             title: Text('Wishlist'),
             onTap: () {
-              Navigator.pushReplacement(context,
-                  MaterialPageRoute(builder: (context) => const Wishlist()));
+              _navigateToPage(context, const Wishlist());
             },
           ),
           ListTile(
             title: Text('Your Review'),
             onTap: () {
-              Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => const ReviewListPage()));
+              _navigateToPage(context, const ReviewListPage());
             },
           ),
           ListTile(
             title: Text('Review Form'),
             onTap: () {
-              Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => const ReviewFormPage()));
+              _navigateToPage(context, const ReviewFormPage());
             },
           ),
           ListTile(
             title: Text('Read Books'),
             onTap: () {
-              Navigator.pushReplacement(context,
-                  MaterialPageRoute(builder: (context) => const ProductPage()));
+              _navigateToPage(context, const ProductPage());
             },
           ),
         ],
       ),
     );
+  }
+
+  void _navigateToPage(BuildContext context, Widget page) {
+    if (isLoggedIn.isNotEmpty) {
+      print(isLoggedIn);
+      Navigator.push(context, MaterialPageRoute(builder: (context) => page));
+    } else {
+      Navigator.push(
+          context, MaterialPageRoute(builder: (context) => LoginPage()));
+    }
   }
 }

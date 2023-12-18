@@ -1,11 +1,15 @@
-// ignore_for_file: prefer_const_constructors, library_private_types_in_public_api, prefer_const_literals_to_create_immutables, unnecessary_string_interpolations, unused_field, avoid_print
-
+// ignore_for_file: prefer_const_constructors, library_private_types_in_public_api, prefer_const_literals_to_create_immutables, unnecessary_string_interpolations, unused_field, avoid_print, sort_child_properties_last, use_build_context_synchronously, non_constant_identifier_names, unused_local_variable
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:pbp_django_auth/pbp_django_auth.dart';
+import 'package:provider/provider.dart';
 import 'package:readoramamobile/models/books.dart';
+import 'package:readoramamobile/screens/auth/login.dart';
+import 'package:readoramamobile/screens/landinguser/bookdetail.dart';
 import 'dart:convert';
 
 import 'package:readoramamobile/widgets/leftdrawer.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class BookPage extends StatefulWidget {
   const BookPage({Key? key}) : super(key: key);
@@ -17,6 +21,27 @@ class BookPage extends StatefulWidget {
 class _BookPageState extends State<BookPage> {
   List<Books> _books = [];
   TextEditingController searchController = TextEditingController();
+  late String userid = '';
+  late String usernameloggedin = '';
+
+  @override
+  void initState() {
+    super.initState();
+    getSession();
+  }
+
+  @override
+  dispose() {
+    super.dispose();
+  }
+
+  getSession() async {
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    setState(() {
+      userid = pref.getString("userid")!;
+      usernameloggedin = pref.getString("username")!;
+    });
+  }
 
   Future<List<Books>> searchBooks(String query) async {
     var url = Uri.parse('http://localhost:8000/flutter/searchbooks/');
@@ -58,6 +83,35 @@ class _BookPageState extends State<BookPage> {
     return listBooks;
   }
 
+  Future<void> clearSharedPreferences() async {
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    await pref.clear();
+  }
+
+  Future<void> performLogout(BuildContext context) async {
+    final request = context.read<CookieRequest>();
+    try {
+      final response =
+          await request.logout("http://localhost:8000/auth/logout/");
+
+      if (response['status']) {
+        print('Logout successful');
+        // Lakukan update state atau clear data sesuai kebutuhan
+        ScaffoldMessenger.of(context)
+          ..hideCurrentSnackBar()
+          ..showSnackBar(
+            SnackBar(
+                content: Text("Successfully Logout! Bye, $usernameloggedin")),
+          );
+        await clearSharedPreferences();
+      } else {
+        print('Failed to logout. Status code: ${response['message']}');
+      }
+    } catch (error) {
+      print('Error during logout: $error');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -65,8 +119,58 @@ class _BookPageState extends State<BookPage> {
         title: const Text('Book List'),
         backgroundColor: Colors.black,
         foregroundColor: Colors.amber,
+        actions: [
+          if (usernameloggedin.isNotEmpty)
+            PopupMenuButton(
+              icon: Row(
+                children: [
+                  Icon(Icons.account_circle),
+                  SizedBox(width: 4), // Spacer
+                  Text(
+                    usernameloggedin,
+                    style: TextStyle(
+                      color: Colors.amber, // Warna amber untuk nama pengguna
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
+              ),
+              onSelected: (value) async {
+                if (value == 'logout') {
+                  await performLogout(context);
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(builder: (context) => BookPage()),
+                  );
+                }
+              },
+              itemBuilder: (BuildContext context) {
+                return [
+                  PopupMenuItem(
+                    value: 'logout',
+                    child: Text('Logout'),
+                  ),
+                ];
+              },
+            ),
+          if (usernameloggedin.isEmpty)
+            ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => LoginPage()),
+                );
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.amber,
+              ),
+              child: Text('Login'),
+            ),
+        ],
       ),
-      drawer: LeftDrawer(),
+      drawer: LeftDrawer(
+        isLoggedIn: usernameloggedin,
+      ),
       body: Column(
         children: [
           Padding(
@@ -138,8 +242,9 @@ class _BookPageState extends State<BookPage> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) =>
-                                BookDetailPage(book: snapshot.data![index]),
+                            builder: (context) => BookDetailPage(
+                              book: snapshot.data![index],
+                            ),
                           ),
                         );
                       },
@@ -176,96 +281,4 @@ class _BookPageState extends State<BookPage> {
       ),
     );
   }
-}
-
-class BookDetailPage extends StatelessWidget {
-  final Books book;
-
-  const BookDetailPage({Key? key, required this.book}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(book.fields.name),
-        backgroundColor: Colors.black,
-        foregroundColor: Colors.amber,
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(20.0),
-        child: Card(
-          color: Colors.black,
-          elevation: 5.0,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(15.0),
-          ),
-          child: Padding(
-            padding: const EdgeInsets.all(20.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  "Name: ${book.fields.name}",
-                  style: TextStyle(
-                    fontSize: 18.0,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.amber,
-                  ),
-                ),
-                const SizedBox(height: 10),
-                Text(
-                  "Author: ${book.fields.author}",
-                  style: TextStyle(
-                    color: Colors.amber,
-                  ),
-                ),
-                const SizedBox(height: 10),
-                Text(
-                  "Rating: ${book.fields.rating}",
-                  style: TextStyle(
-                    color: Colors.amber,
-                  ),
-                ),
-                const SizedBox(height: 10),
-                Text(
-                  "Number of Reviews: ${book.fields.numReview}",
-                  style: TextStyle(
-                    color: Colors.amber,
-                  ),
-                ),
-                const SizedBox(height: 10),
-                Text(
-                  "Price: ${book.fields.price}",
-                  style: TextStyle(
-                    color: Colors.amber,
-                  ),
-                ),
-                const SizedBox(height: 10),
-                Text(
-                  "Year: ${book.fields.year}",
-                  style: TextStyle(
-                    color: Colors.amber,
-                  ),
-                ),
-                const SizedBox(height: 10),
-                Text(
-                  "Genre: ${book.fields.genre}",
-                  style: TextStyle(
-                    color: Colors.amber,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-void main() {
-  runApp(MaterialApp(
-    home: BookPage(),
-  ));
 }

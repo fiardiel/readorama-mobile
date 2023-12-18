@@ -3,6 +3,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:readoramamobile/models/wishlist.dart'; // Models Aren't Done
 import 'package:readoramamobile/widgets/leftdrawer.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ProductPage extends StatefulWidget {
   const ProductPage({Key? key}) : super(key: key);
@@ -12,6 +13,28 @@ class ProductPage extends StatefulWidget {
 }
 
 class _ProductPageState extends State<ProductPage> {
+  late String userid = '';
+  late String usernameloggedin = '';
+
+  @override
+  void initState() {
+    super.initState();
+    getSession();
+  }
+
+  @override
+  dispose() {
+    super.dispose();
+  }
+
+  getSession() async {
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    setState(() {
+      userid = pref.getString("userid")!;
+      usernameloggedin = pref.getString("username")!;
+    });
+  }
+
   Future<List<WishlistModels>> fetchProduct() async {
     var url = Uri.parse(
         'http://127.0.0.1:8000/wishlist/wishlistmodels/'); // Repo link
@@ -45,7 +68,9 @@ class _ProductPageState extends State<ProductPage> {
       appBar: AppBar(
         title: const Text('Read Books'),
       ),
-      drawer: LeftDrawer(), // Left Drawer Here
+      drawer: LeftDrawer(
+        isLoggedIn: usernameloggedin,
+      ), // Left Drawer Here
       body: FutureBuilder(
         future: fetchProduct(),
         builder: (context, AsyncSnapshot<List<WishlistModels>> snapshot) {
