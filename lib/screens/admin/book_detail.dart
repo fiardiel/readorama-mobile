@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:pbp_django_auth/pbp_django_auth.dart';
+import 'package:provider/provider.dart';
 import 'package:readoramamobile/models/books.dart';
+import 'package:readoramamobile/screens/auth/login.dart';
+import 'package:readoramamobile/screens/landinguser/booklist.dart';
 import 'package:readoramamobile/widgets/admin/leftdrawer_admin.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -37,13 +41,90 @@ class _BookDetailPageState extends State<BookDetailPage> {
     });
   }
 
+  Future<void> clearSharedPreferences() async {
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    await pref.clear();
+  }
+
+  Future<void> performLogout(BuildContext context) async {
+    final request = context.read<CookieRequest>();
+    try {
+      final response =
+          await request.logout("http://localhost:8000/auth/logout/");
+
+      if (response['status']) {
+        print('Logout successful');
+        // Lakukan update state atau clear data sesuai kebutuhan
+        ScaffoldMessenger.of(context)
+          ..hideCurrentSnackBar()
+          ..showSnackBar(
+            SnackBar(
+                content: Text("Successfully Logout! Bye, $usernameloggedin")),
+          );
+        await clearSharedPreferences();
+      } else {
+        print('Failed to logout. Status code: ${response['message']}');
+      }
+    } catch (error) {
+      print('Error during logout: $error');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Book Details'),
+        title: const Text('Admin Book Page'),
         backgroundColor: const Color.fromARGB(255, 25, 29, 37),
         foregroundColor: Colors.white,
+        actions: [
+          if (usernameloggedin.isNotEmpty)
+            PopupMenuButton(
+              icon: Row(
+                children: [
+                  const Icon(Icons.account_circle),
+                  const SizedBox(width: 4), // Spacer
+                  Text(
+                    usernameloggedin,
+                    style: const TextStyle(
+                      color: Colors.white, // Warna amber untuk nama pengguna
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
+              ),
+              onSelected: (value) async {
+                if (value == 'logout') {
+                  await performLogout(context);
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(builder: (context) => BookPage()),
+                  );
+                }
+              },
+              itemBuilder: (BuildContext context) {
+                return [
+                  PopupMenuItem(
+                    value: 'logout',
+                    child: Text('Logout'),
+                  ),
+                ];
+              },
+            ),
+          if (usernameloggedin.isEmpty)
+            ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => LoginPage()),
+                );
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.white,
+              ),
+              child: Text('Login'),
+            ),
+        ],
       ),
       drawer: LeftDrawerAdmin(isLoggedIn: usernameloggedin),
       body: Center(
