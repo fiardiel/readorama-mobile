@@ -57,7 +57,7 @@ class _BookDetailPageState extends State<BookDetailPage> {
       return;
     }
 
-    final String endpoint = 'http://localhost:8000/flutter/add-to-wishlist/';
+    final String endpoint = 'http://35.226.89.131/flutter/add-to-wishlist/';
 
     try {
       final response = await http.post(
@@ -94,7 +94,7 @@ class _BookDetailPageState extends State<BookDetailPage> {
       return;
     }
 
-    final String endpoint = 'http://localhost:8000/flutter/add-to-read/';
+    final String endpoint = 'http://35.226.89.131/flutter/add-to-read/';
 
     try {
       final response = await http.post(
