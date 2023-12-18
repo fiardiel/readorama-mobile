@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:readoramamobile/screens/admin/view_book.dart';
 import 'package:readoramamobile/widgets/admin/leftdrawer_admin.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 // import 'package:rafis_inventory_mobile/screens/menu.dart';
 
 class BookFormPage extends StatefulWidget {
@@ -15,6 +16,31 @@ class BookFormPage extends StatefulWidget {
 }
 
 class _BookFormPageState extends State<BookFormPage> {
+  
+    late String userid = '';
+  late String usernameloggedin = '';
+  late bool isSuperuser = false;
+
+  @override
+  void initState() {
+    super.initState();
+    getSession();
+  }
+
+  @override
+  dispose() {
+    super.dispose();
+  }
+
+  getSession() async {
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    setState(() {
+      userid = pref.getString("userid")!;
+      usernameloggedin = pref.getString("username")!;
+      isSuperuser = pref.getBool("is_superuser")!;
+    });
+  }
+
   final _formKey = GlobalKey<FormState>();
   String _name = "";
   String _author = "";
@@ -29,15 +55,15 @@ class _BookFormPageState extends State<BookFormPage> {
     final request = context.watch<CookieRequest>();
     return Scaffold(
       appBar: AppBar(
-        title: const Center(
+        title: Center(
           child: Text(
-            'Add Book Form',
+            'Add Book Form for $usernameloggedin',
           ),
         ),
         backgroundColor: const Color.fromARGB(255, 25, 29, 37) ,
         foregroundColor: Colors.white,
       ),
-      drawer: LeftDrawerAdmin(),
+      drawer: LeftDrawerAdmin(isLoggedIn: usernameloggedin,),
       body: Form(
         key: _formKey,
         child: SingleChildScrollView(
@@ -228,7 +254,7 @@ class _BookFormPageState extends State<BookFormPage> {
                     if (_formKey.currentState!.validate()) {
                       // Send request to Django and wait for the response
                       final response = await request.postJson(
-                          "http://127.0.0.1:8000/landing-admin/add-book-flutter",
+                          "http://localhost:8000/landing-admin/add-book-flutter",
                           jsonEncode(<String, String>{
                             'name': _name,
                             'author': _author,

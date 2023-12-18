@@ -1,25 +1,46 @@
 import 'package:flutter/material.dart';
 import 'package:readoramamobile/widgets/admin/leftdrawer_admin.dart';
 import 'package:readoramamobile/widgets/admin/home_admin.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 // import drawer widget
 
-class AdminHomePage extends StatelessWidget {
+class AdminHomePage extends StatefulWidget {
   AdminHomePage({Key? key}) : super(key: key);
 
+  @override
+  _AdminHomePageState createState() => _AdminHomePageState();
+}
+
+class _AdminHomePageState extends State<AdminHomePage> {
   final List<AdminHomeItem> items = [
     AdminHomeItem("View Books", Icons.book, Colors.indigo.shade400),
     AdminHomeItem("Add Book", Icons.add_circle_outline_rounded, Colors.blue.shade400),
     AdminHomeItem("Logout", Icons.logout, Colors.red.shade400),
   ];
 
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
+  late String userid = '';
+  late String usernameloggedin = '';
+  late bool isSuperuser = false;
 
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
+  @override
+  void initState() {
+    super.initState();
+    getSession();
+  }
+
+  @override
+  dispose() {
+    super.dispose();
+  }
+
+  getSession() async {
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    setState(() {
+      userid = pref.getString("userid")!;
+      usernameloggedin = pref.getString("username")!;
+      isSuperuser = pref.getBool("is_superuser")!;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -28,10 +49,10 @@ class AdminHomePage extends StatelessWidget {
         title: const Text(
           'Readorama',
         ),
-        backgroundColor: const Color.fromARGB(255, 25, 29, 37) ,
+        backgroundColor: const Color.fromARGB(255, 25, 29, 37),
         foregroundColor: Colors.white,
       ),
-      drawer: LeftDrawerAdmin(),
+      drawer: LeftDrawerAdmin(isLoggedIn: usernameloggedin,),
       body: SingleChildScrollView(
         // Scrolling wrapper widget
         child: Padding(
