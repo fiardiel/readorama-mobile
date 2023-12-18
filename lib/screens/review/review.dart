@@ -1,5 +1,7 @@
 
 
+// ignore_for_file: prefer_const_literals_to_create_immutables, prefer_const_constructors
+
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
@@ -66,7 +68,7 @@ class _ReviewListState extends State<ReviewListPage> {
   }
 
   Future<List<Reviews>> fetchReview() async {
-    var url = Uri.parse('http://127.0.0.1:8000/review/get-review-flutter/');
+    var url = Uri.parse('http://127.0.0.1:8000/review/get-review-flutter/$userid/');
 
     var response = await http.get(
       url,
