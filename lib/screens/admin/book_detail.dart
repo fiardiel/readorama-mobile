@@ -1,3 +1,5 @@
+// ignore_for_file: prefer_const_constructors, use_build_context_synchronously, library_private_types_in_public_api, avoid_print
+
 import 'package:flutter/material.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:provider/provider.dart';
@@ -50,7 +52,7 @@ class _BookDetailPageState extends State<BookDetailPage> {
     final request = context.read<CookieRequest>();
     try {
       final response =
-          await request.logout("http://localhost:8000/auth/logout/");
+          await request.logout("http://35.226.89.131/auth/logout/");
 
       if (response['status']) {
         print('Logout successful');

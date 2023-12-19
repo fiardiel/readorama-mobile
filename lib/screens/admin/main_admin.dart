@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously, prefer_const_constructors, prefer_const_constructors_in_immutables, library_private_types_in_public_api, avoid_print
+
 import 'package:flutter/material.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:provider/provider.dart';
@@ -19,7 +21,7 @@ class _AdminHomePageState extends State<AdminHomePage> {
   final List<AdminHomeItem> items = [
     AdminHomeItem("View Books", Icons.book, Colors.indigo.shade400),
     AdminHomeItem("Add Book", Icons.add_circle_outline_rounded, Colors.blue.shade400),
-    AdminHomeItem("Logout", Icons.logout, Colors.red.shade400),
+    AdminHomeItem("Reviews", Icons.reviews, Colors.red.shade400),
   ];
 
   late String userid = '';
@@ -55,7 +57,7 @@ class _AdminHomePageState extends State<AdminHomePage> {
     final request = context.read<CookieRequest>();
     try {
       final response =
-          await request.logout("http://localhost:8000/auth/logout/");
+          await request.logout("http://35.226.89.131/auth/logout/");
 
       if (response['status']) {
         print('Logout successful');

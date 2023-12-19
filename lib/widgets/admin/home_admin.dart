@@ -1,9 +1,8 @@
+// ignore_for_file: use_build_context_synchronously, unnecessary_string_interpolations, use_key_in_widget_constructors
+
 import 'package:flutter/material.dart';
 import 'package:readoramamobile/screens/admin/view_book.dart';
 import 'package:readoramamobile/screens/admin/add_book.dart';
-import 'package:pbp_django_auth/pbp_django_auth.dart';
-import 'package:provider/provider.dart';
-import 'package:readoramamobile/screens/auth/login.dart';
 
 class AdminHomeItem {
   final String name;
@@ -19,7 +18,6 @@ class AdminHomeCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final request = context.watch<CookieRequest>();
     return Material(
       color: item.color,
       child: InkWell(
@@ -43,24 +41,11 @@ class AdminHomeCard extends StatelessWidget {
               context,
               MaterialPageRoute(builder: (context) => const AdminBookPage()),
             );
-          } else if (item.name == "Logout") {
-            final response =
-                await request.logout("http://127.0.0.1:8000/auth/logout/");
-            String message = response["message"];
-            if (response['status']) {
-              String uname = response["username"];
-              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                content: Text("$message Good bye, $uname."),
-              ));
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(builder: (context) => const LoginPage()),
-              );
-            } else {
-              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                content: Text("$message"),
-              ));
-            }
+          } else if (item.name == "Reviews") {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const AdminBookPage()),
+            );
           }
         },
         child: Container(
