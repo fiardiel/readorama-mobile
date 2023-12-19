@@ -54,7 +54,7 @@ class _EditProductPageState extends State<EditProductPage> {
 
   Future<void> fetchProductDetails() async {
     final response = await http.get(Uri.parse(
-        'http://localhost:8000/landing-admin/loadbooks-by-id/${widget.productId}'));
+        'http://35.226.89.131/landing-admin/loadbooks-by-id/${widget.productId}'));
 
     if (response.statusCode == 200) {
       final productList = jsonDecode(response.body) as List; // Parse as a List
@@ -90,7 +90,7 @@ class _EditProductPageState extends State<EditProductPage> {
     final request = context.read<CookieRequest>();
     try {
       final response =
-          await request.logout("http://localhost:8000/auth/logout/");
+          await request.logout("http://35.226.89.131/auth/logout/");
 
       if (response['status']) {
         print('Logout successful');
@@ -271,7 +271,7 @@ class _EditProductPageState extends State<EditProductPage> {
                   if (_formKey.currentState!.validate()) {
                     final response = await http.put(
                       Uri.parse(
-                          'http://localhost:8000/landing-admin/edit-product-flutter/${widget.productId}'),
+                          'http://35.226.89.131/landing-admin/edit-product-flutter/${widget.productId}'),
                       headers: {
                         'Content-Type': 'application/json',
                       },

@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously, avoid_print, prefer_const_constructors
+
 import 'dart:convert';
 import 'package:flutter/material.dart';
 // import 'package:rafis_inventory_mobile/widgets/left_drawer.dart';
@@ -19,7 +21,7 @@ class BookFormPage extends StatefulWidget {
 
 class _BookFormPageState extends State<BookFormPage> {
   
-    late String userid = '';
+  late String userid = '';
   late String usernameloggedin = '';
   late bool isSuperuser = false;
 
@@ -52,7 +54,7 @@ class _BookFormPageState extends State<BookFormPage> {
     final request = context.read<CookieRequest>();
     try {
       final response =
-          await request.logout("http://localhost:8000/auth/logout/");
+          await request.logout("http://35.226.89.131/auth/logout/");
 
       if (response['status']) {
         print('Logout successful');
@@ -329,7 +331,7 @@ class _BookFormPageState extends State<BookFormPage> {
                     if (_formKey.currentState!.validate()) {
                       // Send request to Django and wait for the response
                       final response = await request.postJson(
-                          "http://localhost:8000/landing-admin/add-book-flutter",
+                          "http://35.226.89.131/landing-admin/add-book-flutter",
                           jsonEncode(<String, String>{
                             'name': _name,
                             'author': _author,
