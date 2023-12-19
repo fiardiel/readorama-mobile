@@ -50,12 +50,6 @@ class LeftDrawer extends StatelessWidget {
             },
           ),
           ListTile(
-            title: Text('Review Form'),
-            onTap: () {
-              _navigateToPage(context, const ReviewFormPage());
-            },
-          ),
-          ListTile(
             title: Text('Read Books'),
             onTap: () {
               _navigateToPage(context, const ProductPage());

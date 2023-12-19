@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:readoramamobile/models/wishlist.dart'; // Models Aren't Done
+import 'package:readoramamobile/screens/review/review_form.dart';
 import 'package:readoramamobile/widgets/leftdrawer.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -105,7 +106,8 @@ class _ProductPageState extends State<ProductPage> {
                     DataCell(
                       ElevatedButton(
                         onPressed: () {
-                          // Implement the 'Write a Review' functionality
+                          Navigator.pushReplacement(context, 
+                          MaterialPageRoute(builder: (context) => ReviewFormPage(booktoReview: product.bookId,)));
                         },
                         style: ElevatedButton.styleFrom(
                           primary:
@@ -114,7 +116,7 @@ class _ProductPageState extends State<ProductPage> {
                           textStyle:
                               TextStyle(fontSize: 0), // Set text size to zero
                         ),
-                        child: Text(''), // Empty text
+                        child: Text('Write Review'), // Empty text
                       ),
                     ),
                     DataCell(

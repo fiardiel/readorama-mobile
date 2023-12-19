@@ -52,6 +52,7 @@ class _ReviewListState extends State<ReviewListPage> {
   void initState() {
     super.initState();
     getSession();
+    fetchReview();
   }
 
   @override
@@ -131,7 +132,7 @@ class _ReviewListState extends State<ReviewListPage> {
               itemCount: snapshot.data!.length,
               itemBuilder: (_, index) => InkWell(
                 onTap: () {
-                  Navigator.push(
+                  Navigator.pushReplacement(
                     context,
                     MaterialPageRoute(
                       builder: (context) =>

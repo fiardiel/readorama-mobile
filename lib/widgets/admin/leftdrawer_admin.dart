@@ -95,14 +95,6 @@ class _LeftDrawerAdminState extends State<LeftDrawerAdmin> {
             },
           ),
           ListTile(
-            leading: Icon(Icons.rate_review),
-            title: Text('Review Form'),
-            onTap: () {
-              Navigator.pushReplacement(context,
-                  MaterialPageRoute(builder: (context) => const ReviewFormPage()));
-            },
-          ),
-          ListTile(
             leading: Icon(Icons.checklist_rounded),
             title: Text('Read Books'),
             onTap: () {

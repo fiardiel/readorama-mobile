@@ -12,7 +12,8 @@ import 'package:readoramamobile/widgets/leftdrawer.dart'; // Import your LeftDra
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ReviewFormPage extends StatefulWidget {
-  const ReviewFormPage({Key? key}) : super(key: key);
+  final int booktoReview;
+  ReviewFormPage({required this.booktoReview});
 
   @override
   _ReviewFormPageState createState() => _ReviewFormPageState();
@@ -21,16 +22,19 @@ class ReviewFormPage extends StatefulWidget {
 class _ReviewFormPageState extends State<ReviewFormPage> {
   final _formKey = GlobalKey<FormState>();
   String _review_title = "";
-  String _book_title = "";
+  TextEditingController _book_title = TextEditingController();
   int _rating = 0;
   String _review = "";
   late String userid = '';
   late String usernameloggedin = '';
 
+  get http => null;
+
   @override
   void initState() {
     super.initState();
     getSession();
+    fetchBookDetails(context);
   }
 
   @override
@@ -46,9 +50,20 @@ class _ReviewFormPageState extends State<ReviewFormPage> {
     });
   }
 
+fetchBookDetails(BuildContext context) async {
+    final response = await context.read<CookieRequest>().get(
+        'http://127.0.0.1:8000/review/load-books-id/${widget.booktoReview}');
+    String bookName = response['book_name'];
+    _book_title.text = bookName;
+    return bookName;
+
+  }
+
+
   @override
   Widget build(BuildContext context) {
     final request = context.watch<CookieRequest>();
+
 
     return Scaffold(
       appBar: AppBar(
@@ -94,6 +109,7 @@ class _ReviewFormPageState extends State<ReviewFormPage> {
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: TextFormField(
+                  controller: _book_title,
                   decoration: InputDecoration(
                     hintText: "Book Title",
                     labelText: "Book Title",
@@ -102,9 +118,7 @@ class _ReviewFormPageState extends State<ReviewFormPage> {
                     ),
                   ),
                   onChanged: (String? value) {
-                    setState(() {
-                      _book_title = value!;
-                    });
+                    setState(() {});
                   },
                   validator: (String? value) {
                     if (value == null || value.isEmpty) {
@@ -175,12 +189,14 @@ class _ReviewFormPageState extends State<ReviewFormPage> {
                       if (_formKey.currentState!.validate()) {
                         // Send request to Django and wait for the response
                         final response = await request.postJson(
-                            "http://127.0.0.1:8000/review/add-review-flutter/",
-                            jsonEncode(<String, String>{
+                            "http://127.0.0.1:8000/review/add-review-flutter/${widget.booktoReview}",
+                            jsonEncode(<String, dynamic>{
                               'reviewTitle': _review_title,
                               'review': _review,
                               'ratingNew': _rating.toString(),
-                              'bookName': _book_title,
+                              'bookName': _book_title.text,
+                              'user': userid
+      
                             }));
 
                         if (response['status'] == 'success') {
