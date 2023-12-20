@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import 'package:readoramamobile/models/books.dart';
 import 'package:readoramamobile/screens/auth/login.dart';
 import 'package:readoramamobile/screens/landinguser/bookdetail.dart';
+import 'package:readoramamobile/widgets/admin/leftdrawer_admin.dart';
 import 'dart:convert';
 
 import 'package:readoramamobile/widgets/leftdrawer.dart';
@@ -23,6 +24,7 @@ class _BookPageState extends State<BookPage> {
   TextEditingController searchController = TextEditingController();
   late String userid = '';
   late String usernameloggedin = '';
+  late bool isSuperuser = false;
 
   @override
   void initState() {
@@ -40,11 +42,12 @@ class _BookPageState extends State<BookPage> {
     setState(() {
       userid = pref.getString("userid")!;
       usernameloggedin = pref.getString("username")!;
+      isSuperuser = pref.getBool('is_superuser')!;
     });
   }
 
   Future<List<Books>> searchBooks(String query) async {
-    var url = Uri.parse('http://localhost:8000/flutter/searchbooks/');
+    var url = Uri.parse('http://35.226.89.131/flutter/searchbooks/');
     var uri = Uri.http(url.authority, url.path, {"search_term": query});
 
     var response = await http.get(
@@ -65,7 +68,7 @@ class _BookPageState extends State<BookPage> {
   }
 
   Future<List<Books>> fetchBooks() async {
-    var url = Uri.parse('http://localhost:8000/loadbooks/');
+    var url = Uri.parse('http://35.226.89.131/loadbooks/');
     var response = await http.get(
       url,
       headers: {"Content-Type": "application/json"},
@@ -92,7 +95,7 @@ class _BookPageState extends State<BookPage> {
     final request = context.read<CookieRequest>();
     try {
       final response =
-          await request.logout("http://localhost:8000/auth/logout/");
+          await request.logout("http://35.226.89.131/auth/logout/");
 
       if (response['status']) {
         print('Logout successful');
@@ -114,6 +117,15 @@ class _BookPageState extends State<BookPage> {
 
   @override
   Widget build(BuildContext context) {
+
+    Widget drawerWidget;
+
+    if (isSuperuser) {
+      drawerWidget = LeftDrawerAdmin(isLoggedIn: usernameloggedin);
+    } else {
+      drawerWidget = LeftDrawer(isLoggedIn: usernameloggedin);
+    }
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Book List'),
@@ -168,9 +180,7 @@ class _BookPageState extends State<BookPage> {
             ),
         ],
       ),
-      drawer: LeftDrawer(
-        isLoggedIn: usernameloggedin,
-      ),
+      drawer: drawerWidget,
       body: Column(
         children: [
           Padding(

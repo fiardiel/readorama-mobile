@@ -8,6 +8,7 @@ import 'package:http/http.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:provider/provider.dart';
 import 'package:readoramamobile/screens/review/review.dart';
+import 'package:readoramamobile/widgets/admin/leftdrawer_admin.dart';
 import 'package:readoramamobile/widgets/leftdrawer.dart'; // Import your LeftDrawer widget here
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -27,6 +28,7 @@ class _ReviewFormPageState extends State<ReviewFormPage> {
   String _review = "";
   late String userid = '';
   late String usernameloggedin = '';
+  late bool isSuperuser = false;
 
   get http => null;
 
@@ -47,6 +49,7 @@ class _ReviewFormPageState extends State<ReviewFormPage> {
     setState(() {
       userid = pref.getString("userid")!;
       usernameloggedin = pref.getString("username")!;
+      isSuperuser = pref.getBool('is_superuser')!;
     });
   }
 
@@ -62,6 +65,14 @@ fetchBookDetails(BuildContext context) async {
 
   @override
   Widget build(BuildContext context) {
+    Widget drawerWidget;
+
+    if (isSuperuser) {
+      drawerWidget = LeftDrawerAdmin(isLoggedIn: usernameloggedin);
+    } else {
+      drawerWidget = LeftDrawer(isLoggedIn: usernameloggedin);
+    }
+
     final request = context.watch<CookieRequest>();
 
 
@@ -74,9 +85,7 @@ fetchBookDetails(BuildContext context) async {
         foregroundColor: Colors.amber,
       ),
       // Add the previously created drawer here
-      drawer: LeftDrawer(
-        isLoggedIn: usernameloggedin,
-      ),
+      drawer: drawerWidget,
       body: Form(
         key: _formKey,
         child: SingleChildScrollView(

@@ -1,4 +1,10 @@
+// ignore_for_file: use_build_context_synchronously, prefer_const_constructors, prefer_const_constructors_in_immutables, library_private_types_in_public_api, avoid_print
+
 import 'package:flutter/material.dart';
+import 'package:pbp_django_auth/pbp_django_auth.dart';
+import 'package:provider/provider.dart';
+import 'package:readoramamobile/screens/auth/login.dart';
+import 'package:readoramamobile/screens/landinguser/booklist.dart';
 import 'package:readoramamobile/widgets/admin/leftdrawer_admin.dart';
 import 'package:readoramamobile/widgets/admin/home_admin.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -15,7 +21,7 @@ class _AdminHomePageState extends State<AdminHomePage> {
   final List<AdminHomeItem> items = [
     AdminHomeItem("View Books", Icons.book, Colors.indigo.shade400),
     AdminHomeItem("Add Book", Icons.add_circle_outline_rounded, Colors.blue.shade400),
-    AdminHomeItem("Logout", Icons.logout, Colors.red.shade400),
+    AdminHomeItem("Reviews", Icons.reviews, Colors.red.shade400),
   ];
 
   late String userid = '';
@@ -42,15 +48,90 @@ class _AdminHomePageState extends State<AdminHomePage> {
     });
   }
 
+  Future<void> clearSharedPreferences() async {
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    await pref.clear();
+  }
+
+  Future<void> performLogout(BuildContext context) async {
+    final request = context.read<CookieRequest>();
+    try {
+      final response =
+          await request.logout("http://35.226.89.131/auth/logout/");
+
+      if (response['status']) {
+        print('Logout successful');
+        // Lakukan update state atau clear data sesuai kebutuhan
+        ScaffoldMessenger.of(context)
+          ..hideCurrentSnackBar()
+          ..showSnackBar(
+            SnackBar(
+                content: Text("Successfully Logout! Bye, $usernameloggedin")),
+          );
+        await clearSharedPreferences();
+      } else {
+        print('Failed to logout. Status code: ${response['message']}');
+      }
+    } catch (error) {
+      print('Error during logout: $error');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
-          'Readorama',
-        ),
+        title: const Text('Readorama Admin Home Page'),
         backgroundColor: const Color.fromARGB(255, 25, 29, 37),
         foregroundColor: Colors.white,
+        actions: [
+          if (usernameloggedin.isNotEmpty)
+            PopupMenuButton(
+              icon: Row(
+                children: [
+                  const Icon(Icons.account_circle),
+                  const SizedBox(width: 4), // Spacer
+                  Text(
+                    usernameloggedin,
+                    style: const TextStyle(
+                      color: Colors.white, // Warna amber untuk nama pengguna
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
+              ),
+              onSelected: (value) async {
+                if (value == 'logout') {
+                  await performLogout(context);
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(builder: (context) => BookPage()),
+                  );
+                }
+              },
+              itemBuilder: (BuildContext context) {
+                return [
+                  PopupMenuItem(
+                    value: 'logout',
+                    child: Text('Logout'),
+                  ),
+                ];
+              },
+            ),
+          if (usernameloggedin.isEmpty)
+            ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => LoginPage()),
+                );
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.white,
+              ),
+              child: Text('Login'),
+            ),
+        ],
       ),
       drawer: LeftDrawerAdmin(isLoggedIn: usernameloggedin,),
       body: SingleChildScrollView(

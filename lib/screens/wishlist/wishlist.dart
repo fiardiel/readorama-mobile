@@ -39,7 +39,8 @@ class _WishlistState extends State<Wishlist> {
   }
 
   Future<List<WishlistModels>> fetchProduct() async {
-    var url = Uri.parse('http://127.0.0.1:8000/wishlist/wishlistmodels/');
+    var url =
+        Uri.parse('http://127.0.0.1:8000/wishlist/wishlistmodels/$userid/');
     var response = await http.get(
       url,
       headers: {"Content-Type": "application/json"},
@@ -122,22 +123,20 @@ class _WishlistState extends State<Wishlist> {
                           overflow: TextOverflow.ellipsis,
                           maxLines: 2,
                         ),
-                        Text(
-                          snapshot.data![index].flag.toString(),
-                          style: const TextStyle(
-                            fontSize: 18.0,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.amber,
-                          ),
-                          overflow: TextOverflow.ellipsis,
-                          maxLines: 2,
-                        ),
                         const SizedBox(height: 8),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            GestureDetector(
-                              onTap: () {},
+                            InkWell(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => WishlistDetails(
+                                        book: snapshot.data![index]),
+                                  ),
+                                );
+                              },
                               child: Text(
                                 'View Details',
                                 style: TextStyle(color: Colors.blue),
@@ -241,6 +240,85 @@ class _WishlistState extends State<Wishlist> {
             );
           }
         },
+      ),
+    );
+  }
+}
+
+class WishlistDetails extends StatelessWidget {
+  final WishlistModels book;
+
+  const WishlistDetails({Key? key, required this.book}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(book.bookName),
+        backgroundColor: Colors.black,
+        foregroundColor: Colors.amber,
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(20.0),
+        child: Card(
+          color: Colors.black,
+          elevation: 5.0,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(15.0),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  "Name: ${book.bookName}",
+                  style: TextStyle(
+                    fontSize: 18.0,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.amber,
+                  ),
+                ),
+                const SizedBox(height: 10),
+                Text(
+                  "Author: ${book.bookAuthor}",
+                  style: TextStyle(
+                    color: Colors.amber,
+                  ),
+                ),
+                const SizedBox(height: 10),
+                Text(
+                  "Rating: ${book.bookRating}",
+                  style: TextStyle(
+                    color: Colors.amber,
+                  ),
+                ),
+                const SizedBox(height: 10),
+                Text(
+                  "Number of Reviews: ${book.bookNumReviews}",
+                  style: TextStyle(
+                    color: Colors.amber,
+                  ),
+                ),
+                const SizedBox(height: 10),
+                Text(
+                  "Year: ${book.bookRating}",
+                  style: TextStyle(
+                    color: Colors.amber,
+                  ),
+                ),
+                const SizedBox(height: 10),
+                Text(
+                  "Genre: ${book.bookGenre}",
+                  style: TextStyle(
+                    color: Colors.amber,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
       ),
     );
   }

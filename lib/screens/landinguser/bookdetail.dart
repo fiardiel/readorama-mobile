@@ -3,6 +3,8 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:pbp_django_auth/pbp_django_auth.dart';
+import 'package:provider/provider.dart';
 import 'package:readoramamobile/models/books.dart';
 import 'package:readoramamobile/screens/auth/login.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -20,6 +22,7 @@ class BookDetailPage extends StatefulWidget {
 class _BookDetailPageState extends State<BookDetailPage> {
   late String userId = '';
   late String usernameloggedin = '';
+  late bool isSuperuser = false;
 
   @override
   void initState() {
@@ -37,6 +40,7 @@ class _BookDetailPageState extends State<BookDetailPage> {
     setState(() {
       userId = pref.getString("userid")!;
       usernameloggedin = pref.getString("username")!;
+      isSuperuser = pref.getBool('is_superuser')!;
     });
   }
 
@@ -57,7 +61,7 @@ class _BookDetailPageState extends State<BookDetailPage> {
       return;
     }
 
-    final String endpoint = 'http://localhost:8000/flutter/add-to-wishlist/';
+    final String endpoint = 'http://35.226.89.131/flutter/add-to-wishlist/';
 
     try {
       final response = await http.post(
@@ -94,7 +98,7 @@ class _BookDetailPageState extends State<BookDetailPage> {
       return;
     }
 
-    final String endpoint = 'http://localhost:8000/flutter/add-to-read/';
+    final String endpoint = 'http://35.226.89.131/flutter/add-to-read/';
 
     try {
       final response = await http.post(
@@ -122,6 +126,35 @@ class _BookDetailPageState extends State<BookDetailPage> {
       }
     } catch (error) {
       print('Error adding to Wishlist: $error');
+    }
+  }
+
+  Future<void> clearSharedPreferences() async {
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    await pref.clear();
+  }
+
+  Future<void> performLogout(BuildContext context) async {
+    final request = context.read<CookieRequest>();
+    try {
+      final response =
+          await request.logout("http://localhost:8000/auth/logout/");
+
+      if (response['status']) {
+        print('Logout successful');
+        // Lakukan update state atau clear data sesuai kebutuhan
+        ScaffoldMessenger.of(context)
+          ..hideCurrentSnackBar()
+          ..showSnackBar(
+            SnackBar(
+                content: Text("Successfully Logout! Bye, $usernameloggedin")),
+          );
+        await clearSharedPreferences();
+      } else {
+        print('Failed to logout. Status code: ${response['message']}');
+      }
+    } catch (error) {
+      print('Error during logout: $error');
     }
   }
 

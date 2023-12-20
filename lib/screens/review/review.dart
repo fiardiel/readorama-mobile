@@ -1,5 +1,3 @@
-
-
 // ignore_for_file: prefer_const_literals_to_create_immutables, prefer_const_constructors
 
 import 'dart:convert';
@@ -8,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:readoramamobile/models/review.dart';
 import 'package:readoramamobile/screens/review/review_detail.dart';
+import 'package:readoramamobile/widgets/admin/leftdrawer_admin.dart';
 import 'package:readoramamobile/widgets/leftdrawer.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -47,6 +46,7 @@ class ReviewListPage extends StatefulWidget {
 class _ReviewListState extends State<ReviewListPage> {
   late String userid = '';
   late String usernameloggedin = '';
+  late bool isSuperuser = false;
 
   @override
   void initState() {
@@ -65,10 +65,12 @@ class _ReviewListState extends State<ReviewListPage> {
     setState(() {
       userid = pref.getString("userid")!;
       usernameloggedin = pref.getString("username")!;
+      isSuperuser = pref.getBool("is_superuser")!;
     });
   }
 
   Future<List<Reviews>> fetchReview() async {
+
     var url = Uri.parse('http://35.226.89.131/review/get-review-flutter/$userid/');
 
     var response = await http.get(
@@ -91,15 +93,21 @@ class _ReviewListState extends State<ReviewListPage> {
 
   @override
   Widget build(BuildContext context) {
+    Widget drawerWidget;
+
+    if (isSuperuser) {
+      drawerWidget = LeftDrawerAdmin(isLoggedIn: usernameloggedin);
+    } else {
+      drawerWidget = LeftDrawer(isLoggedIn: usernameloggedin);
+    }
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Your Review'),
         backgroundColor: Colors.black,
         foregroundColor: Colors.amber,
       ),
-      drawer: LeftDrawer(
-        isLoggedIn: usernameloggedin,
-      ),
+      drawer: drawerWidget,
       body: FutureBuilder(
         future: fetchReview(),
         builder: (context, AsyncSnapshot<List<Reviews>> snapshot) {
@@ -178,6 +186,7 @@ class _ReviewListState extends State<ReviewListPage> {
                           // maxLines: 2,
                         ),
                         ElevatedButton(
+
                           onPressed: () async {
                             final reviewDeletedpk = snapshot.data![index]
                                 .reviewPk; // implement the 'delete review' functionality in flutter
