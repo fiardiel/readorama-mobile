@@ -43,7 +43,7 @@ class _WishlistState extends State<Wishlist> {
 
   Future<List<WishlistModels>> fetchProduct() async {
     var url =
-        Uri.parse('http://127.0.0.1:8000/wishlist/wishlistmodels/$userid/');
+        Uri.parse('http://35.226.89.131/wishlist/wishlistmodels/$userid/');
     var response = await http.get(
       url,
       headers: {"Content-Type": "application/json"},
@@ -74,7 +74,7 @@ class _WishlistState extends State<Wishlist> {
     } else {
       drawerWidget = LeftDrawer(isLoggedIn: usernameloggedin);
     }
-    
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Wishlist'),
@@ -157,7 +157,7 @@ class _WishlistState extends State<Wishlist> {
                                 // Implement the 'Delete Book' functionality
                                 final response = await http.delete(
                                   Uri.parse(
-                                      'http://localhost:8000/read_page/delete-flutter/${snapshot.data![index].wishlistId}'),
+                                      'http://35.226.89.131/read_page/delete-flutter/${snapshot.data![index].wishlistId}'),
                                   headers: {"Content-Type": "application/json"},
                                 );
                                 if (response.statusCode == 200) {
@@ -201,7 +201,7 @@ class _WishlistState extends State<Wishlist> {
                                 // Implement the 'Mark as Read' functionality
                                 final response = await http.post(
                                   Uri.parse(
-                                      'http://localhost:8000/wishlist/mark-as-read/${snapshot.data![index].wishlistId}/'),
+                                      'http://35.226.89.131/wishlist/mark-as-read/${snapshot.data![index].wishlistId}/'),
                                   headers: {"Content-Type": "application/json"},
                                 );
 
