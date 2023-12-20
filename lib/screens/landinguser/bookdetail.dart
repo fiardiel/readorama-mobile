@@ -138,7 +138,7 @@ class _BookDetailPageState extends State<BookDetailPage> {
     final request = context.read<CookieRequest>();
     try {
       final response =
-          await request.logout("http://localhost:8000/auth/logout/");
+          await request.logout("http://35.226.89.131:8000/auth/logout/");
 
       if (response['status']) {
         print('Logout successful');
@@ -193,21 +193,26 @@ class _BookDetailPageState extends State<BookDetailPage> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    ElevatedButton(
-                      onPressed: addToWishlist,
-                      style: ElevatedButton.styleFrom(
-                        foregroundColor: Colors.amber,
-                        backgroundColor: Colors.black,
+                    Flexible(
+                      child: ElevatedButton(
+                        onPressed: addToWishlist,
+                        style: ElevatedButton.styleFrom(
+                          foregroundColor: Colors.amber,
+                          backgroundColor: Colors.black,
+                        ),
+                        child: Text("Add to Wishlist"),
                       ),
-                      child: Text("Add to Wishlist"),
                     ),
-                    ElevatedButton(
-                      onPressed: markAsRead,
-                      style: ElevatedButton.styleFrom(
-                        foregroundColor: Colors.amber,
-                        backgroundColor: Colors.black,
+                    const SizedBox(width: 10),
+                    Flexible(
+                      child: ElevatedButton(
+                        onPressed: markAsRead,
+                        style: ElevatedButton.styleFrom(
+                          foregroundColor: Colors.amber,
+                          backgroundColor: Colors.black,
+                        ),
+                        child: Text("Mark as Read"),
                       ),
-                      child: Text("Mark as Read"),
                     ),
                   ],
                 ),

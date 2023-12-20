@@ -26,6 +26,13 @@ class _BookPageState extends State<BookPage> {
   late String usernameloggedin = '';
   late bool isSuperuser = false;
 
+  int calculateCrossAxisCount(double screenWidth) {
+    // Calculate the number of columns based on screen width
+    double cardWidth = 200.0; // Desired card width
+    int crossAxisCount = screenWidth ~/ cardWidth;
+    return crossAxisCount;
+  }
+
   @override
   void initState() {
     super.initState();
@@ -117,7 +124,6 @@ class _BookPageState extends State<BookPage> {
 
   @override
   Widget build(BuildContext context) {
-
     Widget drawerWidget;
 
     if (isSuperuser) {
@@ -215,75 +221,83 @@ class _BookPageState extends State<BookPage> {
             ),
           ),
           Expanded(
-            child: FutureBuilder(
-              future: _books.isEmpty && searchController.text.isEmpty
-                  ? fetchBooks()
-                  : searchBooks(searchController.text),
-              builder: (context, AsyncSnapshot<List<Books>> snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Center(child: CircularProgressIndicator());
-                } else if (snapshot.hasError) {
-                  return Center(
-                    child: Text('Error: ${snapshot.error}'),
-                  );
-                } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                  return Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          "No books available.",
-                          style: TextStyle(color: Colors.amber, fontSize: 20),
+            child: LayoutBuilder(
+              builder: (context, constraints) {
+                double screenWidth = constraints.maxWidth;
+
+                return FutureBuilder(
+                  future: _books.isEmpty && searchController.text.isEmpty
+                      ? fetchBooks()
+                      : searchBooks(searchController.text),
+                  builder: (context, AsyncSnapshot<List<Books>> snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const Center(child: CircularProgressIndicator());
+                    } else if (snapshot.hasError) {
+                      return Center(
+                        child: Text('Error: ${snapshot.error}'),
+                      );
+                    } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                      return Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              "No books available.",
+                              style:
+                                  TextStyle(color: Colors.amber, fontSize: 20),
+                            ),
+                            SizedBox(height: 8),
+                          ],
                         ),
-                        SizedBox(height: 8),
-                      ],
-                    ),
-                  );
-                } else {
-                  return GridView.builder(
-                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 5, // Jumlah kartu per baris
-                      crossAxisSpacing: 16.0,
-                      mainAxisSpacing: 16.0,
-                    ),
-                    itemCount: snapshot.data!.length,
-                    itemBuilder: (_, index) => GestureDetector(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => BookDetailPage(
-                              book: snapshot.data![index],
+                      );
+                    } else {
+                      int crossAxisCount = calculateCrossAxisCount(screenWidth);
+                      return GridView.builder(
+                        gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+                          maxCrossAxisExtent: screenWidth / crossAxisCount,
+                          crossAxisSpacing: 16.0,
+                          mainAxisSpacing: 16.0,
+                        ),
+                        itemCount: snapshot.data!.length,
+                        itemBuilder: (_, index) => GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => BookDetailPage(
+                                  book: snapshot.data![index],
+                                ),
+                              ),
+                            );
+                          },
+                          child: Card(
+                            color: Colors.black87,
+                            margin: const EdgeInsets.all(8.0),
+                            child: Padding(
+                              padding: const EdgeInsets.all(20.0),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    "${snapshot.data![index].fields.name}",
+                                    style: TextStyle(
+                                      fontSize: 18.0,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.amber,
+                                    ),
+                                    overflow: TextOverflow.ellipsis,
+                                    maxLines: 2,
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
-                        );
-                      },
-                      child: Card(
-                        color: Colors.black87,
-                        margin: const EdgeInsets.all(8.0),
-                        child: Padding(
-                          padding: const EdgeInsets.all(20.0),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                "${snapshot.data![index].fields.name}",
-                                style: TextStyle(
-                                  fontSize: 18.0,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.amber,
-                                ),
-                                overflow: TextOverflow.ellipsis,
-                                maxLines: 2,
-                              ),
-                            ],
-                          ),
                         ),
-                      ),
-                    ),
-                  );
-                }
+                      );
+                    }
+                  },
+                );
               },
             ),
           ),

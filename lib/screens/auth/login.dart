@@ -54,42 +54,43 @@ class _LoginPageState extends State<LoginPage> {
           color: Colors.black,
           child: Padding(
             padding: const EdgeInsets.all(16.0),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                CachedNetworkImage(
-                  imageUrl: '/assets/readoramalogo.png',
-                  height: 80.0,
-                  width: double.infinity,
-                  fit: BoxFit.cover,
-                ),
-                const SizedBox(height: 24.0),
-                TextField(
-                  controller: _usernameController,
-                  style: TextStyle(color: Colors.amber),
-                  decoration: InputDecoration(
-                    labelText: 'Username',
-                    labelStyle: TextStyle(color: Colors.amber),
-                    focusedBorder: UnderlineInputBorder(
-                      borderSide: BorderSide(color: Colors.amber),
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Image.asset(
+                    'assets/readoramalogo.png',
+                    height: MediaQuery.of(context).size.height * 0.15,
+                    width: double.infinity,
+                    fit: BoxFit.cover,
+                  ),
+                  const SizedBox(height: 24.0),
+                  TextField(
+                    controller: _usernameController,
+                    style: TextStyle(color: Colors.amber),
+                    decoration: InputDecoration(
+                      labelText: 'Username',
+                      labelStyle: TextStyle(color: Colors.amber),
+                      focusedBorder: UnderlineInputBorder(
+                        borderSide: BorderSide(color: Colors.amber),
+                      ),
                     ),
                   ),
-                ),
-                const SizedBox(height: 12.0),
-                TextField(
-                  controller: _passwordController,
-                  style: TextStyle(color: Colors.amber),
-                  decoration: InputDecoration(
-                    labelText: 'Password',
-                    labelStyle: TextStyle(color: Colors.amber),
-                    focusedBorder: UnderlineInputBorder(
-                      borderSide: BorderSide(color: Colors.amber),
+                  const SizedBox(height: 12.0),
+                  TextField(
+                    controller: _passwordController,
+                    style: TextStyle(color: Colors.amber),
+                    decoration: InputDecoration(
+                      labelText: 'Password',
+                      labelStyle: TextStyle(color: Colors.amber),
+                      focusedBorder: UnderlineInputBorder(
+                        borderSide: BorderSide(color: Colors.amber),
+                      ),
                     ),
+                    obscureText: true,
                   ),
-                  obscureText: true,
-                ),
-                const SizedBox(height: 24.0),
-                ElevatedButton(
+                  const SizedBox(height: 24.0),
+                  ElevatedButton(
                   onPressed: () async {
                     String username = _usernameController.text;
                     String password = _passwordController.text;
@@ -178,6 +179,7 @@ class _LoginPageState extends State<LoginPage> {
             ),
           ),
         ),
+      ),
       ),
     );
   }
