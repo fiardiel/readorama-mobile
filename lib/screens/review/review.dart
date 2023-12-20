@@ -177,7 +177,7 @@ class _ReviewListState extends State<ReviewListPage> {
                           // maxLines: 2,
                         ),
                         Text(
-                          "Rating: ${snapshot.data![index].ratingNew}",
+                          "Rating: ${snapshot.data![index].ratingNew.toString()}",
                           style: TextStyle(
                             fontSize: 12.0,
                             color: Colors.amber,
