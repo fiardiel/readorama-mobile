@@ -19,6 +19,13 @@ class _ProductPageState extends State<ProductPage> {
   late String usernameloggedin = '';
   late bool isSuperuser = false;
 
+  int calculateCrossAxisCount(double screenWidth) {
+    // Calculate the number of columns based on screen width
+    double cardWidth = 200.0; // Desired card width
+    int crossAxisCount = screenWidth ~/ cardWidth;
+    return crossAxisCount;
+  }
+
   @override
   void initState() {
     super.initState();
@@ -106,127 +113,127 @@ class _ProductPageState extends State<ProductPage> {
               ),
             );
           } else {
-            return GridView.builder(
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 5, // Jumlah kartu per baris
-                crossAxisSpacing: 16.0,
-                mainAxisSpacing: 16.0,
-              ),
-              itemCount: snapshot.data!.length,
-              itemBuilder: (_, index) {
-                return Card(
-                  color: Colors.black87,
-                  margin: const EdgeInsets.all(8.0),
-                  child: Padding(
-                    padding: const EdgeInsets.all(20.0),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          snapshot.data![index].bookName,
-                          style: const TextStyle(
-                            fontSize: 18.0,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.amber,
+            return LayoutBuilder(builder: (context, constraints) {
+              return ListView.builder(
+                itemCount: snapshot.data!.length,
+                itemBuilder: (_, index) {
+                  return Card(
+                    color: Colors.black87,
+                    margin: const EdgeInsets.all(8.0),
+                    child: Padding(
+                      padding: const EdgeInsets.all(20.0),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            snapshot.data![index].bookName,
+                            style: const TextStyle(
+                              fontSize: 18.0,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.amber,
+                            ),
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 2,
                           ),
-                          overflow: TextOverflow.ellipsis,
-                          maxLines: 2,
-                        ),
-                        const SizedBox(height: 8),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            InkWell(
-                              onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => ReadBooksDetails(
-                                        book: snapshot.data![index]),
-                                  ),
-                                );
-                              },
-                              child: Text(
-                                'View Details',
-                                style: TextStyle(color: Colors.blue),
-                              ),
-                            ),
-                            // Delete button
-                            ElevatedButton(
-                              onPressed: () async {
-                                // Implement the 'Delete Book' functionality
-                                final response = await http.delete(
-                                  Uri.parse(
-                                      'http://35.226.89.131/read_page/delete-flutter/${snapshot.data![index].wishlistId}'),
-                                  headers: {"Content-Type": "application/json"},
-                                );
-                                if (response.statusCode == 200) {
-                                  // ignore: use_build_context_synchronously
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(
-                                      content: Text(
-                                          "Book deleted successfully!"),
+                          const SizedBox(height: 8),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              InkWell(
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => ReadBooksDetails(
+                                        book: snapshot.data![index],
+                                      ),
                                     ),
                                   );
-                                  // You may want to refresh the product list after deletion
-                                  setState(() {
-                                    snapshot.data!.removeAt(index);
-                                  });
-                                } else {
-                                  print(
-                                      'Failed to delete product. Status code: ${response.statusCode}');
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(
-                                      content: Text(
-                                          "Failed to delete the book."),
-                                    ),
+                                },
+                                child: Text(
+                                  'View Details',
+                                  style: TextStyle(color: Colors.blue),
+                                ),
+                              ),
+                              // Delete button
+                              ElevatedButton(
+                                onPressed: () async {
+                                  // Implement the 'Delete Book' functionality
+                                  final response = await http.delete(
+                                    Uri.parse(
+                                        'http://35.226.89.131/read_page/delete-flutter/${snapshot.data![index].wishlistId}'),
+                                    headers: {
+                                      "Content-Type": "application/json"
+                                    },
                                   );
-                                }
-                              },
-                              style: ElevatedButton.styleFrom(
-                                // ignore: deprecated_member_use
-                                primary:
-                                    Colors.red, // Set the button color to red
-                                padding: EdgeInsets.zero, // Remove padding
-                                textStyle: TextStyle(
-                                    fontSize: 0), // Set text size to zero
+                                  if (response.statusCode == 200) {
+                                    // ignore: use_build_context_synchronously
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(
+                                        content: Text(
+                                            "Book deleted successfully!"),
+                                      ),
+                                    );
+                                    // You may want to refresh the product list after deletion
+                                    setState(() {
+                                      snapshot.data!.removeAt(index);
+                                    });
+                                  } else {
+                                    print(
+                                        'Failed to delete product. Status code: ${response.statusCode}');
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(
+                                        content: Text(
+                                            "Failed to delete the book."),
+                                      ),
+                                    );
+                                  }
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  // ignore: deprecated_member_use
+                                  primary:
+                                      Colors.red, // Set the button color to red
+                                  padding: EdgeInsets.zero, // Remove padding
+                                  textStyle: TextStyle(
+                                      fontSize: 0), // Set text size to zero
+                                ),
+                                child: Icon(
+                                  Icons.delete,
+                                  color: Colors.white,
+                                ),
                               ),
-                              child: Icon(
-                                Icons.delete,
-                                color: Colors.white,
-                              ),
-                            ),
-                            ElevatedButton(
-                              onPressed: () async {
-                                Navigator.pushReplacement(
+                              ElevatedButton(
+                                onPressed: () async {
+                                  Navigator.pushReplacement(
                               context,
                               MaterialPageRoute(
                                   builder: (context) => ReviewFormPage(
                                         booktoReview: snapshot.data![index].bookId,
                                       )));
-                              },
-                              style: ElevatedButton.styleFrom(
-                                // ignore: deprecated_member_use
-                                primary:
-                                    Colors.green, // Set the button color to red
-                                padding: EdgeInsets.zero, // Remove padding
-                                textStyle: TextStyle(
-                                    fontSize: 0), // Set text size to zero
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  // ignore: deprecated_member_use
+                                  primary: Colors
+                                      .green, // Set the button color to red
+                                  padding: EdgeInsets.zero, // Remove padding
+                                  textStyle: TextStyle(
+                                      fontSize: 0), // Set text size to zero
+                                ),
+                                child: Icon(
+                                  Icons.rate_review,
+                                  color: Colors.white,
+                                ),
                               ),
-                              child: Icon(
-                                Icons.rate_review,
-                                color: Colors.white,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
+                            ],
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                );
-              },
-            );
+                  );
+                },
+              );
+            });
           }
         },
       ),
