@@ -45,7 +45,7 @@ class AdminHomeCard extends StatelessWidget {
           } else if (item.name == "Reviews") {
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => const ReviewAdminListPage()),
+              MaterialPageRoute(builder: (context) => const AdminReviewListPage()),
             );
           }
         },
