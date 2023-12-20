@@ -1,6 +1,5 @@
-// ignore_for_file: use_build_context_synchronously, prefer_const_constructors, library_private_types_in_public_api, use_key_in_widget_constructors, unused_local_variable
+// ignore_for_file: use_build_context_synchronously, prefer_const_constructors, library_private_types_in_public_api, use_key_in_widget_constructors, unused_local_variable, prefer_final_fields, unused_field
 
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:provider/provider.dart';
@@ -38,6 +37,7 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  bool _isPasswordVisible = false;
 
   @override
   Widget build(BuildContext context) {
@@ -86,100 +86,113 @@ class _LoginPageState extends State<LoginPage> {
                       focusedBorder: UnderlineInputBorder(
                         borderSide: BorderSide(color: Colors.amber),
                       ),
+                      suffixIcon: IconButton(
+                        icon: Icon(
+                          _isPasswordVisible
+                              ? Icons.visibility
+                              : Icons.visibility_off,
+                          color: Colors.amber,
+                        ),
+                        onPressed: () {
+                          setState(() {
+                            _isPasswordVisible = !_isPasswordVisible;
+                          });
+                        },
+                      ),
                     ),
-                    obscureText: true,
+                    obscureText: !_isPasswordVisible,
                   ),
                   const SizedBox(height: 24.0),
                   ElevatedButton(
-                  onPressed: () async {
-                    String username = _usernameController.text;
-                    String password = _passwordController.text;
-                    final response = await request
-                        .login("http://35.226.89.131/auth/login/", {
-                      'username': username,
-                      'password': password,
-                    });
+                    onPressed: () async {
+                      String username = _usernameController.text;
+                      String password = _passwordController.text;
+                      final response = await request
+                          .login("http://35.226.89.131/auth/login/", {
+                        'username': username,
+                        'password': password,
+                      });
 
-                    if (request.loggedIn) {
-                      String message = response['message'];
-                      String uname = response['username'];
-                      int uid = response['user_id'];
-                      bool isSuperuser = response['is_superuser'];
-                      SharedPreferences pref =
-                          await SharedPreferences.getInstance();
-                      await pref.setString("username", uname);
-                      await pref.setString("userid", uid.toString());
-                      await pref.setBool("is_superuser", isSuperuser);
-                      await pref.setBool("is_login", true);
-                      if (isSuperuser) {
-                        Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => AdminHomePage()),
-                        );
-                        ScaffoldMessenger.of(context)
-                          ..hideCurrentSnackBar()
-                          ..showSnackBar(
-                            SnackBar(
-                                content: Text("$message Welcome, $uname.")),
+                      if (request.loggedIn) {
+                        String message = response['message'];
+                        String uname = response['username'];
+                        int uid = response['user_id'];
+                        bool isSuperuser = response['is_superuser'];
+                        SharedPreferences pref =
+                            await SharedPreferences.getInstance();
+                        await pref.setString("username", uname);
+                        await pref.setString("userid", uid.toString());
+                        await pref.setBool("is_superuser", isSuperuser);
+                        await pref.setBool("is_login", true);
+                        if (isSuperuser) {
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => AdminHomePage()),
                           );
+                          ScaffoldMessenger.of(context)
+                            ..hideCurrentSnackBar()
+                            ..showSnackBar(
+                              SnackBar(
+                                  content: Text("$message Welcome, $uname.")),
+                            );
+                        } else {
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(builder: (context) => BookPage()),
+                          );
+                          ScaffoldMessenger.of(context)
+                            ..hideCurrentSnackBar()
+                            ..showSnackBar(
+                              SnackBar(
+                                  content: Text("$message Welcome, $uname.")),
+                            );
+                        }
                       } else {
-                        Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(builder: (context) => BookPage()),
+                        showDialog(
+                          context: context,
+                          builder: (context) => AlertDialog(
+                            title: const Text('Login Failed'),
+                            content: Text(response['message']),
+                            actions: [
+                              TextButton(
+                                child: const Text('OK'),
+                                onPressed: () {
+                                  Navigator.pop(context);
+                                },
+                              ),
+                            ],
+                          ),
                         );
-                        ScaffoldMessenger.of(context)
-                          ..hideCurrentSnackBar()
-                          ..showSnackBar(
-                            SnackBar(
-                                content: Text("$message Welcome, $uname.")),
-                          );
                       }
-                    } else {
-                      showDialog(
-                        context: context,
-                        builder: (context) => AlertDialog(
-                          title: const Text('Login Failed'),
-                          content: Text(response['message']),
-                          actions: [
-                            TextButton(
-                              child: const Text('OK'),
-                              onPressed: () {
-                                Navigator.pop(context);
-                              },
-                            ),
-                          ],
-                        ),
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.amber,
+                    ),
+                    child: const Text('Login'),
+                  ),
+                  const SizedBox(height: 12.0),
+                  Text(
+                    "Don't have an account? Signup here",
+                    style: TextStyle(color: Colors.amber),
+                  ),
+                  ElevatedButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => RegisterPage()),
                       );
-                    }
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.amber,
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.amber,
+                    ),
+                    child: const Text('Register'),
                   ),
-                  child: const Text('Login'),
-                ),
-                const SizedBox(height: 12.0),
-                Text(
-                  "Don't have an account? Signup here",
-                  style: TextStyle(color: Colors.amber),
-                ),
-                ElevatedButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => RegisterPage()),
-                    );
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.amber,
-                  ),
-                  child: const Text('Register'),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),
-      ),
       ),
     );
   }
