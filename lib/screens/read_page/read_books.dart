@@ -3,6 +3,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:readoramamobile/models/wishlist.dart';
 import 'package:readoramamobile/screens/review/review_form.dart';
+import 'package:readoramamobile/widgets/admin/leftdrawer_admin.dart';
 import 'package:readoramamobile/widgets/leftdrawer.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -16,6 +17,7 @@ class ProductPage extends StatefulWidget {
 class _ProductPageState extends State<ProductPage> {
   late String userid = '';
   late String usernameloggedin = '';
+  late bool isSuperuser = false;
 
   @override
   void initState() {
@@ -33,6 +35,7 @@ class _ProductPageState extends State<ProductPage> {
     setState(() {
       userid = pref.getString("userid")!;
       usernameloggedin = pref.getString("username")!;
+      isSuperuser = pref.getBool("is_superuser")!;
     });
   }
 
@@ -65,15 +68,21 @@ class _ProductPageState extends State<ProductPage> {
 
   @override
   Widget build(BuildContext context) {
+    Widget drawerWidget;
+
+    if (isSuperuser) {
+      drawerWidget = LeftDrawerAdmin(isLoggedIn: usernameloggedin);
+    } else {
+      drawerWidget = LeftDrawer(isLoggedIn: usernameloggedin);
+    }
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Read Books'),
         backgroundColor: Colors.black,
         foregroundColor: Colors.amber,
       ),
-      drawer: LeftDrawer(
-        isLoggedIn: usernameloggedin,
-      ), // Left Drawer Here
+      drawer: drawerWidget, // Left Drawer Here
       body: FutureBuilder(
         future: fetchProduct(),
         builder: (context, AsyncSnapshot<List<WishlistModels>> snapshot) {
@@ -108,8 +117,12 @@ class _ProductPageState extends State<ProductPage> {
                     DataCell(
                       ElevatedButton(
                         onPressed: () {
-                          Navigator.pushReplacement(context, 
-                          MaterialPageRoute(builder: (context) => ReviewFormPage(booktoReview: product.bookId,)));
+                          Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => ReviewFormPage(
+                                        booktoReview: product.bookId,
+                                      )));
                         },
                         style: ElevatedButton.styleFrom(
                           primary:
