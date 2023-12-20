@@ -187,6 +187,7 @@ class _ReviewListState extends State<ReviewListPage> {
                           overflow: TextOverflow.ellipsis,
                           // maxLines: 2,
                         ),
+
                         ElevatedButton(
                             onPressed: () async {
                               final reviewDeletedpk = snapshot.data![index]
