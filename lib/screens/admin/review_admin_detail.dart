@@ -3,8 +3,7 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
-import 'package:readoramamobile/models/review.dart';
-import 'package:readoramamobile/screens/review/review.dart'; // Replace with the correct path
+import 'package:readoramamobile/models/review.dart'; // Replace with the correct path
 import 'package:readoramamobile/screens/review/edit_review.dart';
 
 class ReviewDetailAdminPage extends StatefulWidget {
@@ -122,16 +121,6 @@ class _ReviewDetailAdminPageState extends State<ReviewDetailAdminPage> {
                       },
                       child: Text('Edit Review',
                           style: TextStyle(color: const Color.fromARGB(255, 25, 29, 37),)),
-                    ),
-                    ElevatedButton(
-                      onPressed: () {
-                        Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => ReviewListPage()));
-                      },
-                      child: const Text('Back to Review List',
-                          style: TextStyle(color: const Color.fromARGB(255, 25, 29, 37))),
                     ),
                   ],
                 ),
