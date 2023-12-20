@@ -54,137 +54,139 @@ class _RegisterPageState extends State<RegisterPage> {
               Colors.black, // Sesuaikan dengan warna background Card LoginPage
           child: Padding(
             padding: const EdgeInsets.all(16.0),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  'Register ReadORama',
-                  style: TextStyle(
-                    fontSize: 20.0,
-                    fontWeight: FontWeight.bold,
-                    color:
-                        Colors.amber, // Sesuaikan dengan warna teks LoginPage
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    'Register ReadORama',
+                    style: TextStyle(
+                      fontSize: 20.0,
+                      fontWeight: FontWeight.bold,
+                      color:
+                          Colors.amber, // Sesuaikan dengan warna teks LoginPage
+                    ),
                   ),
-                ),
-                const SizedBox(height: 16.0),
-                TextField(
-                  controller: _usernameController,
-                  style: TextStyle(
-                      color: Colors
-                          .amber), // Sesuaikan dengan warna teks LoginPage
-                  decoration: const InputDecoration(
-                    labelText: 'Username',
-                    labelStyle: TextStyle(
+                  const SizedBox(height: 16.0),
+                  TextField(
+                    controller: _usernameController,
+                    style: TextStyle(
                         color: Colors
                             .amber), // Sesuaikan dengan warna teks LoginPage
+                    decoration: const InputDecoration(
+                      labelText: 'Username',
+                      labelStyle: TextStyle(
+                          color: Colors
+                              .amber), // Sesuaikan dengan warna teks LoginPage
+                    ),
                   ),
-                ),
-                const SizedBox(height: 12.0),
-                TextField(
-                  controller: _password1Controller,
-                  style: TextStyle(
-                      color: Colors
-                          .amber), // Sesuaikan dengan warna teks LoginPage
-                  decoration: const InputDecoration(
-                    labelText: 'Password',
-                    labelStyle: TextStyle(
+                  const SizedBox(height: 12.0),
+                  TextField(
+                    controller: _password1Controller,
+                    style: TextStyle(
                         color: Colors
                             .amber), // Sesuaikan dengan warna teks LoginPage
+                    decoration: const InputDecoration(
+                      labelText: 'Password',
+                      labelStyle: TextStyle(
+                          color: Colors
+                              .amber), // Sesuaikan dengan warna teks LoginPage
+                    ),
+                    obscureText: true,
                   ),
-                  obscureText: true,
-                ),
-                const SizedBox(height: 12.0),
-                TextField(
-                  controller: _password2Controller,
-                  style: TextStyle(
-                      color: Colors
-                          .amber), // Sesuaikan dengan warna teks LoginPage
-                  decoration: const InputDecoration(
-                    labelText: 'Confirm Password',
-                    labelStyle: TextStyle(
+                  const SizedBox(height: 12.0),
+                  TextField(
+                    controller: _password2Controller,
+                    style: TextStyle(
                         color: Colors
                             .amber), // Sesuaikan dengan warna teks LoginPage
+                    decoration: const InputDecoration(
+                      labelText: 'Confirm Password',
+                      labelStyle: TextStyle(
+                          color: Colors
+                              .amber), // Sesuaikan dengan warna teks LoginPage
+                    ),
+                    obscureText: true,
                   ),
-                  obscureText: true,
-                ),
-                const SizedBox(height: 24.0),
-                ElevatedButton(
-                  onPressed: () async {
-                    String username = _usernameController.text;
-                    String password1 = _password1Controller.text;
-                    String password2 = _password2Controller.text;
+                  const SizedBox(height: 24.0),
+                  ElevatedButton(
+                    onPressed: () async {
+                      String username = _usernameController.text;
+                      String password1 = _password1Controller.text;
+                      String password2 = _password2Controller.text;
 
-                    if (password1 != password2) {
-                      showDialog(
-                        context: context,
-                        builder: (context) => AlertDialog(
-                          title: const Text('Registration Failed'),
-                          content: const Text('Passwords do not match.'),
-                          actions: [
-                            TextButton(
-                              child: const Text('OK'),
-                              onPressed: () {
-                                Navigator.pop(context);
-                              },
-                            ),
-                          ],
-                        ),
-                      );
-                      return;
-                    }
-
-                    final response = await postJson(
-                      "http://35.226.89.131/auth/register/",
-                      {
-                        "Content-Type": "application/json",
-                      },
-                      {
-                        'username': username,
-                        'password1': password1,
-                        'password2': password2,
-                      },
-                    );
-
-                    if (response['message'] == 'Register Success!') {
-                      String message = response['message'];
-                      String uname = response['username'];
-                      Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(builder: (context) => LoginPage()),
-                      );
-                      ScaffoldMessenger.of(context)
-                        ..hideCurrentSnackBar()
-                        ..showSnackBar(
-                          SnackBar(
-                              content:
-                                  Text("$message Please login again, $uname.")),
+                      if (password1 != password2) {
+                        showDialog(
+                          context: context,
+                          builder: (context) => AlertDialog(
+                            title: const Text('Registration Failed'),
+                            content: const Text('Passwords do not match.'),
+                            actions: [
+                              TextButton(
+                                child: const Text('OK'),
+                                onPressed: () {
+                                  Navigator.pop(context);
+                                },
+                              ),
+                            ],
+                          ),
                         );
-                    } else {
-                      showDialog(
-                        context: context,
-                        builder: (context) => AlertDialog(
-                          title: const Text('Registration Failed'),
-                          content: Text(response['message']),
-                          actions: [
-                            TextButton(
-                              child: const Text('OK'),
-                              onPressed: () {
-                                Navigator.pop(context);
-                              },
-                            ),
-                          ],
-                        ),
+                        return;
+                      }
+
+                      final response = await postJson(
+                        "http://35.226.89.131/auth/register/",
+                        {
+                          "Content-Type": "application/json",
+                        },
+                        {
+                          'username': username,
+                          'password1': password1,
+                          'password2': password2,
+                        },
                       );
-                    }
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor:
-                        Colors.amber, // Sesuaikan dengan warna tombol LoginPage
+
+                      if (response['message'] == 'Register Success!') {
+                        String message = response['message'];
+                        String uname = response['username'];
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(builder: (context) => LoginPage()),
+                        );
+                        ScaffoldMessenger.of(context)
+                          ..hideCurrentSnackBar()
+                          ..showSnackBar(
+                            SnackBar(
+                                content: Text(
+                                    "$message Please login again, $uname.")),
+                          );
+                      } else {
+                        showDialog(
+                          context: context,
+                          builder: (context) => AlertDialog(
+                            title: const Text('Registration Failed'),
+                            content: Text(response['message']),
+                            actions: [
+                              TextButton(
+                                child: const Text('OK'),
+                                onPressed: () {
+                                  Navigator.pop(context);
+                                },
+                              ),
+                            ],
+                          ),
+                        );
+                      }
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors
+                          .amber, // Sesuaikan dengan warna tombol LoginPage
+                    ),
+                    child: const Text('Register'),
                   ),
-                  child: const Text('Register'),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),
