@@ -16,7 +16,7 @@ class ReviewDetailPage extends StatefulWidget {
 
 class _ReviewDetailPageState extends State<ReviewDetailPage> {
   Future<Reviews?> fetchReviewDetails() async {
-    var url = Uri.parse('http://127.0.0.1:8000/review/load-review-id/${widget.review.reviewPk}');
+    var url = Uri.parse('http://35.226.89.131/review/load-review-id/${widget.review.reviewPk}');
     var response = await http.get(
       url,
       headers: {"Content-Type": "application/json"},

@@ -55,7 +55,7 @@ class _ReviewFormPageState extends State<ReviewFormPage> {
 
 fetchBookDetails(BuildContext context) async {
     final response = await context.read<CookieRequest>().get(
-        'http://127.0.0.1:8000/review/load-books-id/${widget.booktoReview}');
+        'http://35.226.89.131/review/load-books-id/${widget.booktoReview}');
     String bookName = response['book_name'];
     _book_title.text = bookName;
     return bookName;
@@ -198,7 +198,7 @@ fetchBookDetails(BuildContext context) async {
                       if (_formKey.currentState!.validate()) {
                         // Send request to Django and wait for the response
                         final response = await request.postJson(
-                            "http://127.0.0.1:8000/review/add-review-flutter/${widget.booktoReview}",
+                            "http://35.226.89.131/review/add-review-flutter/${widget.booktoReview}",
                             jsonEncode(<String, dynamic>{
                               'reviewTitle': _review_title,
                               'review': _review,
