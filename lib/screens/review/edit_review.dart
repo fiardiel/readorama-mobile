@@ -26,7 +26,7 @@ class _EditReviewState extends State<EditReviewPage> {
 
   Future<void> fetchProductDetails() async {
     final response = await http.put(Uri.parse(
-        'http://127.0.0.1:8000/review/load-review-id/${widget.reviewId}'));
+        'http://35.226.89.131/review/load-review-id/${widget.reviewId}'));
 
     if (response.statusCode == 200) {
       final reviewList = jsonDecode(response.body) as List;
@@ -110,7 +110,7 @@ class _EditReviewState extends State<EditReviewPage> {
                     if (_formKey.currentState!.validate()) {
                       final response = await http.post(
                         Uri.parse(
-                            'http://127.0.0.1:8000/review/edit-review-flutter/${widget.reviewId}'),
+                            'http://35.226.89.131/review/edit-review-flutter/${widget.reviewId}'),
                         headers: {
                           'Content-Type': 'application/json',
                         },

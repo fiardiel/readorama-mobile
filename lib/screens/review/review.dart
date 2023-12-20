@@ -69,7 +69,7 @@ class _ReviewListState extends State<ReviewListPage> {
   }
 
   Future<List<Reviews>> fetchReview() async {
-    var url = Uri.parse('http://127.0.0.1:8000/review/get-review-flutter/$userid/');
+    var url = Uri.parse('http://35.226.89.131/review/get-review-flutter/$userid/');
 
     var response = await http.get(
       url,
@@ -183,7 +183,7 @@ class _ReviewListState extends State<ReviewListPage> {
                                 .reviewPk; // implement the 'delete review' functionality in flutter
                             final response = await http.delete(
                               Uri.parse(
-                                  'http://127.0.0.1:8000/review/delete-review-flutter/$reviewDeletedpk'),
+                                  'http://35.226.89.131/review/delete-review-flutter/$reviewDeletedpk'),
                               headers: {"Content-Type": "application/json"},
                             );
 
