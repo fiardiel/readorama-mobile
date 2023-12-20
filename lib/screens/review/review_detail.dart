@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:html';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:readoramamobile/models/review.dart';
@@ -16,7 +15,8 @@ class ReviewDetailPage extends StatefulWidget {
 
 class _ReviewDetailPageState extends State<ReviewDetailPage> {
   Future<Reviews?> fetchReviewDetails() async {
-    var url = Uri.parse('http://35.226.89.131/review/load-review-id/${widget.review.reviewPk}');
+    var url = Uri.parse(
+        'http://35.226.89.131/review/load-review-id/${widget.review.reviewPk}');
     var response = await http.get(
       url,
       headers: {"Content-Type": "application/json"},
@@ -82,7 +82,8 @@ class _ReviewDetailPageState extends State<ReviewDetailPage> {
           } else if (snapshot.data == null) {
             return const Center(child: Text('No data available'));
           } else {
-            Reviews reviewDetails = snapshot.data!; // Assuming you want the first item
+            Reviews reviewDetails =
+                snapshot.data!; // Assuming you want the first item
 
             return Card(
               color: Colors.black,
@@ -117,15 +118,18 @@ class _ReviewDetailPageState extends State<ReviewDetailPage> {
                       onPressed: () {
                         navigateToEditReviewPage(reviewDetails.reviewPk);
                       },
-                      child: Text(
-                        'Edit Review', style: TextStyle(color:Colors.black)
-                      ),
+                      child: Text('Edit Review',
+                          style: TextStyle(color: Colors.black)),
                     ),
                     ElevatedButton(
                       onPressed: () {
-                        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => ReviewListPage()));
+                        Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => ReviewListPage()));
                       },
-                      child: const Text('Back to Review List', style: TextStyle(color:Colors.black)),
+                      child: const Text('Back to Review List',
+                          style: TextStyle(color: Colors.black)),
                     ),
                   ],
                 ),
