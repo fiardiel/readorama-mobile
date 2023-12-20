@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:readoramamobile/models/wishlist.dart';
+import 'package:readoramamobile/widgets/admin/leftdrawer_admin.dart';
 import 'package:readoramamobile/widgets/leftdrawer.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -18,6 +19,7 @@ class Wishlist extends StatefulWidget {
 class _WishlistState extends State<Wishlist> {
   late String userid = '';
   late String usernameloggedin = '';
+  late bool isSuperuser = false;
 
   @override
   void initState() {
@@ -35,6 +37,7 @@ class _WishlistState extends State<Wishlist> {
     setState(() {
       userid = pref.getString("userid")!;
       usernameloggedin = pref.getString("username")!;
+      isSuperuser = pref.getBool('is_superuser')!;
     });
   }
 
@@ -64,15 +67,21 @@ class _WishlistState extends State<Wishlist> {
 
   @override
   Widget build(BuildContext context) {
+    Widget drawerWidget;
+
+    if (isSuperuser) {
+      drawerWidget = LeftDrawerAdmin(isLoggedIn: usernameloggedin);
+    } else {
+      drawerWidget = LeftDrawer(isLoggedIn: usernameloggedin);
+    }
+    
     return Scaffold(
       appBar: AppBar(
         title: const Text('Wishlist'),
         backgroundColor: Colors.black,
         foregroundColor: Colors.amber,
       ),
-      drawer: LeftDrawer(
-        isLoggedIn: usernameloggedin,
-      ),
+      drawer: drawerWidget,
       body: FutureBuilder(
         future: fetchProduct(),
         builder: (context, AsyncSnapshot<List<WishlistModels>> snapshot) {
