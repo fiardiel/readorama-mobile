@@ -81,7 +81,7 @@ class _AdminHomePageState extends State<AdminHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Readorama Admin Home Page'),
+        title: const Text('Readorama Admin'),
         backgroundColor: const Color.fromARGB(255, 25, 29, 37),
         foregroundColor: Colors.white,
         actions: [
