@@ -214,6 +214,10 @@ class _BookFormPageState extends State<BookFormPage> {
                   if (double.tryParse(value) == null) {
                     return "Rating must be a number!";
                   }
+                  if (double.tryParse(value)! < 0.0 ||
+                      double.tryParse(value)! > 5) {
+                    return "Rating must be between 0 and 5";
+                  }
                   return null;
                 },
               ),

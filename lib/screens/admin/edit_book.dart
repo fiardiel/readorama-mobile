@@ -205,6 +205,10 @@ class _EditProductPageState extends State<EditProductPage> {
                   if (value == null || value.isEmpty) {
                     return "Rating cannot be empty!";
                   }
+                  if (double.tryParse(value)! < 0.0 ||
+                      double.tryParse(value)! > 5) {
+                    return "Rating must be between 0 and 5";
+                  }
                   if (double.tryParse(value) == null) {
                     return "Rating must be a number!";
                   }
