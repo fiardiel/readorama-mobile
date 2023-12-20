@@ -1,4 +1,4 @@
-// ignore_for_file: use_build_context_synchronously, prefer_const_constructors
+// ignore_for_file: use_build_context_synchronously, prefer_const_constructors, sized_box_for_whitespace, library_private_types_in_public_api, avoid_print, non_constant_identifier_names, unnecessary_string_interpolations
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -135,65 +135,63 @@ class _AdminBookPageState extends State<AdminBookPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Admin Book Page'),
-        backgroundColor: const Color.fromARGB(255, 25, 29, 37),
-        foregroundColor: Colors.white,
-        actions: [
-          if (usernameloggedin.isNotEmpty)
-            PopupMenuButton(
-              icon: Row(
-                children: [
-                  const Icon(Icons.account_circle),
-                  const SizedBox(width: 4),
-                  Text(
-                    usernameloggedin,
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
+        appBar: AppBar(
+          title: const Text('Admin Book Page'),
+          backgroundColor: const Color.fromARGB(255, 25, 29, 37),
+          foregroundColor: Colors.white,
+          actions: [
+            if (usernameloggedin.isNotEmpty)
+              PopupMenuButton(
+                icon: Row(
+                  children: [
+                    const Icon(Icons.account_circle),
+                    const SizedBox(width: 4),
+                    Text(
+                      usernameloggedin,
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
+                onSelected: (value) async {
+                  if (value == 'logout') {
+                    await performLogout(context);
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(builder: (context) => BookPage()),
+                    );
+                  }
+                },
+                itemBuilder: (BuildContext context) {
+                  return [
+                    PopupMenuItem(
+                      value: 'logout',
+                      child: Text('Logout'),
+                    ),
+                  ];
+                },
               ),
-              onSelected: (value) async {
-                if (value == 'logout') {
-                  await performLogout(context);
-                  Navigator.pushReplacement(
+            if (usernameloggedin.isEmpty)
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => BookPage()),
+                    MaterialPageRoute(builder: (context) => LoginPage()),
                   );
-                }
-              },
-              itemBuilder: (BuildContext context) {
-                return [
-                  PopupMenuItem(
-                    value: 'logout',
-                    child: Text('Logout'),
-                  ),
-                ];
-              },
-            ),
-          if (usernameloggedin.isEmpty)
-            ElevatedButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => LoginPage()),
-                );
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.white,
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.white,
+                ),
+                child: Text('Login'),
               ),
-              child: Text('Login'),
-            ),
-        ],
-      ),
-      drawer: isSuperuser
-          ? LeftDrawerAdmin(isLoggedIn: usernameloggedin)
-          : LeftDrawer(isLoggedIn: usernameloggedin),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
+          ],
+        ),
+        drawer: isSuperuser
+            ? LeftDrawerAdmin(isLoggedIn: usernameloggedin)
+            : LeftDrawer(isLoggedIn: usernameloggedin),
+        body: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: TextField(
@@ -225,153 +223,213 @@ class _AdminBookPageState extends State<AdminBookPage> {
             ),
           ),
           Expanded(
-            child: FutureBuilder(
-              future: searchController.text.isEmpty && _books.isEmpty
-                  ? fetchProduct()
-                  : searchBooks(searchController.text),
-              builder: (context, AsyncSnapshot snapshot) {
-                if (snapshot.data == null) {
-                  return const Center(child: CircularProgressIndicator());
-                } else {
-                  if (!snapshot.hasData) {
-                    return const Column(
-                      children: [
-                        Text(
-                          "No book data available.",
-                          style: TextStyle(color: Color(0xff59A5D8), fontSize: 20),
+              child: FutureBuilder(
+                  future: searchController.text.isEmpty && _books.isEmpty
+                      ? fetchProduct()
+                      : searchBooks(searchController.text),
+                  builder: (context, AsyncSnapshot<List<Books>> snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const Center(child: CircularProgressIndicator());
+                    } else if (snapshot.hasError) {
+                      return Center(
+                        child: Text('Error: ${snapshot.error}'),
+                      );
+                    } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                      return Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: const [
+                            Text(
+                              "No books available.",
+                              style:
+                                  TextStyle(color: Colors.amber, fontSize: 20),
+                            ),
+                            SizedBox(height: 8),
+                          ],
                         ),
-                        SizedBox(height: 8),
-                      ],
-                    );
-                  } else {
-                    return Center(
-                      child: Padding(
-                        padding: const EdgeInsets.all(20.0),
-                        child: GridView.builder(
-                          shrinkWrap: true,
-                          gridDelegate:
-                              const SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: 4,
-                            crossAxisSpacing: 30.0,
-                            mainAxisSpacing: 60.0,
-                          ),
-                          itemCount: snapshot.data!.length,
-                          itemBuilder: (_, index) => Container(
-                            width: MediaQuery.of(context).size.width * 0.1,
-                            child: InkWell(
-                              onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => BookDetailPage(
-                                      book: snapshot.data![index],
+                      );
+                    } else {
+                      return Center(
+                        child: Padding(
+                          padding: const EdgeInsets.all(20.0),
+                          child: GridView.builder(
+                            shrinkWrap: true,
+                            gridDelegate:
+                                const SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: 4,
+                              crossAxisSpacing: 30.0,
+                              mainAxisSpacing: 60.0,
+                            ),
+                            itemCount: snapshot.data!.length,
+                            itemBuilder: (_, index) => Container(
+                              width: MediaQuery.of(context).size.width * 0.1,
+                              child: InkWell(
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => BookDetailPage(
+                                        book: snapshot.data![index],
+                                      ),
                                     ),
-                                  ),
-                                );
-                              },
-                              child: SizedBox(
-                                width: MediaQuery.of(context).size.width * 0.1,
-                                height: MediaQuery.of(context).size.height * 0.05,
-                                child: Card(
-                                  margin: const EdgeInsets.all(2.0),
-                                  elevation: 4.0,
-                                  child: Padding(
-                                    padding: EdgeInsets.all(
-                                      MediaQuery.of(context).size.width * 0.01,
-                                    ),
-                                    child: Column(
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                      crossAxisAlignment: CrossAxisAlignment.center,
-                                      children: [
-                                        Text(
-                                          "${snapshot.data![index].fields.name}",
-                                          style: TextStyle(
-                                            fontSize: MediaQuery.of(context).size.width * 0.01,
-                                            fontWeight: FontWeight.bold,
+                                  );
+                                },
+                                child: SizedBox(
+                                  width:
+                                      MediaQuery.of(context).size.width * 0.1,
+                                  height:
+                                      MediaQuery.of(context).size.height * 0.05,
+                                  child: Card(
+                                    margin: const EdgeInsets.all(2.0),
+                                    elevation: 4.0,
+                                    child: Padding(
+                                      padding: EdgeInsets.all(
+                                        MediaQuery.of(context).size.width *
+                                            0.01,
+                                      ),
+                                      child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
+                                        children: [
+                                          Text(
+                                            "${snapshot.data![index].fields.name}",
+                                            style: TextStyle(
+                                              fontSize: MediaQuery.of(context)
+                                                      .size
+                                                      .width *
+                                                  0.01,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                            textAlign: TextAlign.center,
+                                            maxLines: 2,
+                                            overflow: TextOverflow.ellipsis,
                                           ),
-                                          textAlign: TextAlign.center,
-                                          maxLines: 2,
-                                          overflow: TextOverflow.ellipsis,
-                                        ),
-                                        const SizedBox(height: 3),
-                                        Text(
-                                          "${snapshot.data![index].fields.author}",
-                                          textAlign: TextAlign.center,
-                                          style: TextStyle(
-                                            fontSize: MediaQuery.of(context).size.width * 0.009,
+                                          const SizedBox(height: 3),
+                                          Text(
+                                            "${snapshot.data![index].fields.author}",
+                                            textAlign: TextAlign.center,
+                                            style: TextStyle(
+                                              fontSize: MediaQuery.of(context)
+                                                      .size
+                                                      .width *
+                                                  0.009,
+                                            ),
+                                            maxLines: 1,
+                                            overflow: TextOverflow.ellipsis,
                                           ),
-                                          maxLines: 1,
-                                          overflow: TextOverflow.ellipsis,
-                                        ),
-                                        Container(
-                                          width: MediaQuery.of(context).size.width * 0.2,
-                                          height: MediaQuery.of(context).size.height * 0.05,
-                                          child: ElevatedButton(
-                                            onPressed: () async {
-                                              final bookToDeletePK = snapshot.data![index].pk;
-                                              final response = await http.delete(
-                                                Uri.parse('http://35.226.89.131/landing-admin/delete-book-flutter/$bookToDeletePK'),
-                                                headers: {
-                                                  "Content-Type": "application/json"
-                                                },
-                                              );
-                                              if (response.statusCode == 200) {
-                                                ScaffoldMessenger.of(context).showSnackBar(
-                                                  const SnackBar(
-                                                    content: Text("Product deleted successfully!"),
-                                                  ),
+                                          Container(
+                                            width: MediaQuery.of(context)
+                                                    .size
+                                                    .width *
+                                                0.2,
+                                            height: MediaQuery.of(context)
+                                                    .size
+                                                    .height *
+                                                0.05,
+                                            child: ElevatedButton(
+                                              onPressed: () async {
+                                                final bookToDeletePK =
+                                                    snapshot.data![index].pk;
+                                                final response =
+                                                    await http.delete(
+                                                  Uri.parse(
+                                                      'http://35.226.89.131/landing-admin/delete-book-flutter/$bookToDeletePK'),
+                                                  headers: {
+                                                    "Content-Type":
+                                                        "application/json"
+                                                  },
                                                 );
-                                                setState(() {
-                                                  snapshot.data!.remove((book) => book.pk == bookToDeletePK);
-                                                });
-                                              } else {
-                                                print('Failed to delete product. Status code: ${response.statusCode}');
-                                                ScaffoldMessenger.of(context).showSnackBar(
-                                                  const SnackBar(
-                                                    content: Text("Failed to delete the product."),
-                                                  ),
-                                                );
-                                              }
-                                            },
-                                            style: ElevatedButton.styleFrom(
-                                              backgroundColor: Colors.red,
-                                              padding: EdgeInsets.all(
-                                                MediaQuery.of(context).size.width * 0.001,
+                                                if (response.statusCode ==
+                                                    200) {
+                                                  ScaffoldMessenger.of(context)
+                                                      .showSnackBar(
+                                                    const SnackBar(
+                                                      content: Text(
+                                                          "Product deleted successfully!"),
+                                                    ),
+                                                  );
+                                                  setState(() {
+                                                    snapshot.data!.remove(
+                                                        (book) =>
+                                                            book.pk ==
+                                                            bookToDeletePK);
+                                                  });
+                                                } else {
+                                                  print(
+                                                      'Failed to delete product. Status code: ${response.statusCode}');
+                                                  ScaffoldMessenger.of(context)
+                                                      .showSnackBar(
+                                                    const SnackBar(
+                                                      content: Text(
+                                                          "Failed to delete the product."),
+                                                    ),
+                                                  );
+                                                }
+                                              },
+                                              style: ElevatedButton.styleFrom(
+                                                backgroundColor: Colors.red,
+                                                padding: EdgeInsets.all(
+                                                  MediaQuery.of(context)
+                                                          .size
+                                                          .width *
+                                                      0.001,
+                                                ),
                                               ),
-                                            ),
-                                            child: Text(
-                                              'Delete Book',
-                                              style: TextStyle(
-                                                color: Colors.white,
-                                                fontSize: MediaQuery.of(context).size.width * 0.01,
+                                              child: Text(
+                                                'Delete Book',
+                                                style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontSize:
+                                                      MediaQuery.of(context)
+                                                              .size
+                                                              .width *
+                                                          0.01,
+                                                ),
                                               ),
                                             ),
                                           ),
-                                        ),
-                                        Container(
-                                          width: MediaQuery.of(context).size.width * 0.2,
-                                          height: MediaQuery.of(context).size.height * 0.05,
-                                          child: ElevatedButton(
-                                            onPressed: () {
-                                              final bookToEditPK = snapshot.data![index].pk;
-                                              navigateToEditProductPage(bookToEditPK);
-                                            },
-                                            style: ElevatedButton.styleFrom(
-                                              backgroundColor: Colors.blue,
-                                              padding: EdgeInsets.all(
-                                                MediaQuery.of(context).size.width * 0.001,
+                                          Container(
+                                            width: MediaQuery.of(context)
+                                                    .size
+                                                    .width *
+                                                0.2,
+                                            height: MediaQuery.of(context)
+                                                    .size
+                                                    .height *
+                                                0.05,
+                                            child: ElevatedButton(
+                                              onPressed: () {
+                                                final bookToEditPK =
+                                                    snapshot.data![index].pk;
+                                                navigateToEditProductPage(
+                                                    bookToEditPK);
+                                              },
+                                              style: ElevatedButton.styleFrom(
+                                                backgroundColor: Colors.blue,
+                                                padding: EdgeInsets.all(
+                                                  MediaQuery.of(context)
+                                                          .size
+                                                          .width *
+                                                      0.001,
+                                                ),
                                               ),
-                                            ),
-                                            child: Text(
-                                              'Edit Book',
-                                              style: TextStyle(
-                                                color: Colors.white,
-                                                fontSize: MediaQuery.of(context).size.width * 0.009,
+                                              child: Text(
+                                                'Edit Book',
+                                                style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontSize:
+                                                      MediaQuery.of(context)
+                                                              .size
+                                                              .width *
+                                                          0.009,
+                                                ),
                                               ),
                                             ),
                                           ),
-                                        ),
-                                      ],
+                                        ],
+                                      ),
                                     ),
                                   ),
                                 ),
@@ -379,15 +437,13 @@ class _AdminBookPageState extends State<AdminBookPage> {
                             ),
                           ),
                         ),
-                      ),
-                    );
+                      );
+                    }
                   }
-                }
-              },
-            ),
-          ),
-        ],
-      ),
+                )
+              )
+        ]
+      )
     );
   }
 }
