@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'package:readoramamobile/models/wishlist.dart'; // Models Aren't Done
+import 'package:readoramamobile/models/wishlist.dart';
 import 'package:readoramamobile/screens/review/review_form.dart';
 import 'package:readoramamobile/widgets/leftdrawer.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -38,7 +38,7 @@ class _ProductPageState extends State<ProductPage> {
 
   Future<List<WishlistModels>> fetchProduct() async {
     var url = Uri.parse(
-        'http://127.0.0.1:8000/wishlist/wishlistmodels/'); // Repo link
+        'http://35.226.89.131/wishlist/wishlistmodels/$userid/'); // Repo link
     var response = await http.get(
       url,
       headers: {"Content-Type": "application/json"},
@@ -68,6 +68,8 @@ class _ProductPageState extends State<ProductPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Read Books'),
+        backgroundColor: Colors.black,
+        foregroundColor: Colors.amber,
       ),
       drawer: LeftDrawer(
         isLoggedIn: usernameloggedin,
@@ -128,7 +130,7 @@ class _ProductPageState extends State<ProductPage> {
                           // TODO: Change the URL to your Django app's URL. Don't forget to add the trailing slash (/) if needed.
                           final response = await http.delete(
                             Uri.parse(
-                                'http://localhost:8000/read_page/delete-flutter/${product.wishlistId}'),
+                                'http://35.226.89.131/read_page/delete-flutter/${product.wishlistId}'),
                             headers: {"Content-Type": "application/json"},
                           );
                           if (response.statusCode == 200) {
