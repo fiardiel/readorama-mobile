@@ -152,20 +152,22 @@ class _ReviewListState extends State<ReviewListPage> {
                   color: Colors.black87,
                   margin: const EdgeInsets.all(8.0),
                   child: Padding(
-                    padding: const EdgeInsets.all(20.0),
+                    padding: const EdgeInsets.all(12.0),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          "${snapshot.data![index].reviewTitle}",
-                          style: TextStyle(
-                            fontSize: 18.0,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.amber,
+                        Flexible(
+                          child: Text(
+                            "${snapshot.data![index].reviewTitle}",
+                            style: TextStyle(
+                              fontSize: 18.0,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.amber,
+                            ),
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 2,
                           ),
-                          overflow: TextOverflow.ellipsis,
-                          maxLines: 2,
                         ),
                         Text(
                           "${snapshot.data![index].bookName}",
@@ -185,6 +187,7 @@ class _ReviewListState extends State<ReviewListPage> {
                           overflow: TextOverflow.ellipsis,
                           // maxLines: 2,
                         ),
+
                         ElevatedButton(
                             onPressed: () async {
                               final reviewDeletedpk = snapshot.data![index]
