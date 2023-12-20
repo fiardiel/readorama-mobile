@@ -32,13 +32,14 @@ Our website is designed to be user-friendly and accessible, ensuring that indivi
 - review books 
 
 3. Form:
-- Landing Page for Admin (Rafi)
 - Read List form (Omar)
 - Wishlist page (Bram)
 
 4. Review page (Cyrill)
 
-
+5. Admin page (Rafi)
+- CRUD Books
+- RUD Reviews
 
 
 
@@ -46,3 +47,8 @@ Our website is designed to be user-friendly and accessible, ensuring that indivi
 1. Setup things in the flutter app to support the integration (package, wrapper class, provider, etc)
 2. Setup things in django to support the integration (configure the app, create API endpoints if needed, etc)
 3. How the integration will be made (e.g. API call from flutter app to the django app to obtain json data)
+
+
+### Links
+1. [Progress Report](https://docs.google.com/spreadsheets/d/1J_XofAGogf_eRdN14B4U-QTHBlw2JpMJPDsGKxBsu18/edit?usp=sharing)
+2. 
