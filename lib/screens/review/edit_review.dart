@@ -36,8 +36,7 @@ class _EditReviewState extends State<EditReviewPage> {
         setState(() {
           _reviewTitleController.text = reviewData['review_title'];
           _bookNameController.text = reviewData['book_name'];
-          _ratingNewController.text =
-              reviewData['rating_new'].toString();
+          _ratingNewController.text = reviewData['rating_new'].toString();
           _reviewController.text = reviewData['review'];
         });
       }
@@ -81,11 +80,14 @@ class _EditReviewState extends State<EditReviewPage> {
                   decoration: const InputDecoration(labelText: 'Your Rating'),
                   // Validation, onChanged, and other properties...
                   validator: (String? value) {
-                    if (value == null || value.isEmpty) {
-                      return "Rating cannot be empty!";
-                    }
-                    if (int.tryParse(value) == null) {
+                    double? rating = double.tryParse(value!);
+
+                    if (rating == null) {
                       return "Rating must be a number!";
+                    } else if (rating < 0) {
+                      return "Rating must be positive!";
+                    } else if (rating > 5) {
+                      return "Rating must be lower than 5!";
                     }
                     return null;
                   },
@@ -118,7 +120,7 @@ class _EditReviewState extends State<EditReviewPage> {
                           'review_title': _reviewTitleController.text,
                           'book_name': _bookNameController.text,
                           'review': _reviewController.text,
-                          'rating_new': int.parse(_ratingNewController.text),
+                          'rating_new': double.parse(_ratingNewController.text),
                         }),
                       );
 
