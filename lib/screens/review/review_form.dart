@@ -24,7 +24,7 @@ class _ReviewFormPageState extends State<ReviewFormPage> {
   final _formKey = GlobalKey<FormState>();
   String _review_title = "";
   TextEditingController _book_title = TextEditingController();
-  int _rating = 0;
+  double _rating = 0.0;
   String _review = "";
   late String userid = '';
   late String usernameloggedin = '';
@@ -53,15 +53,13 @@ class _ReviewFormPageState extends State<ReviewFormPage> {
     });
   }
 
-fetchBookDetails(BuildContext context) async {
+  fetchBookDetails(BuildContext context) async {
     final response = await context.read<CookieRequest>().get(
         'http://35.226.89.131/review/load-books-id/${widget.booktoReview}');
     String bookName = response['book_name'];
     _book_title.text = bookName;
     return bookName;
-
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -74,7 +72,6 @@ fetchBookDetails(BuildContext context) async {
     }
 
     final request = context.watch<CookieRequest>();
-
 
     return Scaffold(
       appBar: AppBar(
@@ -149,16 +146,23 @@ fetchBookDetails(BuildContext context) async {
                   ),
                   onChanged: (String? value) {
                     setState(() {
-                      _rating = int.tryParse(value ?? "0") ?? 0;
+                      _rating = double.tryParse(value ?? "0") ?? 0;
                     });
                   },
                   validator: (String? value) {
                     if (value == null || value.isEmpty) {
                       return "Rating cannot be empty!";
                     }
-                    if (int.tryParse(value) == null) {
+                    double? rating = double.tryParse(value);
+
+                    if (rating == null) {
                       return "Rating must be a number!";
+                    } else if (rating < 0.0) {
+                      return "Rating must be positive!";
+                    } else if (rating > 5.0) {
+                      return "Rating must be lower than 5!";
                     }
+
                     return null;
                   },
                 ),
@@ -202,10 +206,9 @@ fetchBookDetails(BuildContext context) async {
                             jsonEncode(<String, dynamic>{
                               'reviewTitle': _review_title,
                               'review': _review,
-                              'ratingNew': _rating.toString(),
+                              'ratingNew': _rating,
                               'bookName': _book_title.text,
                               'user': userid
-      
                             }));
 
                         if (response['status'] == 'success') {

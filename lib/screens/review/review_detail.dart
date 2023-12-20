@@ -121,16 +121,7 @@ class _ReviewDetailPageState extends State<ReviewDetailPage> {
                       child: Text('Edit Review',
                           style: TextStyle(color: Colors.black)),
                     ),
-                    ElevatedButton(
-                      onPressed: () {
-                        Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => ReviewListPage()));
-                      },
-                      child: const Text('Back to Review List',
-                          style: TextStyle(color: Colors.black)),
-                    ),
+
                   ],
                 ),
               ),
